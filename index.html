@@ -253,19 +253,22 @@
               <div className="form-group">
                 <label>Income Source</label>
                 <SearchableSelector
-                  options={["Median Household", "Average Household", "By Profession", "Custom Amount"]}
-                  value={incomeMode === "median" ? "Median Household" :
-                         incomeMode === "average" ? "Average Household" :
+                  options={[
+                    `Median Household${c ? ` ($${c.medianIncome.toLocaleString()})` : ''}`,
+                    `Average Household${c ? ` ($${c.averageIncome.toLocaleString()})` : ''}`,
+                    "By Profession", 
+                    "Custom Amount"
+                  ]}
+                  value={incomeMode === "median" ? `Median Household${c ? ` ($${c.medianIncome.toLocaleString()})` : ''}` :
+                         incomeMode === "average" ? `Average Household${c ? ` ($${c.averageIncome.toLocaleString()})` : ''}` :
                          incomeMode === "profession" ? "By Profession" : 
                          incomeMode === "custom" ? "Custom Amount" : ""}
                   onChange={(value) => {
-                    const modeMap = {
-                      "Median Household": "median",
-                      "Average Household": "average", 
-                      "By Profession": "profession",
-                      "Custom Amount": "custom"
-                    };
-                    setIncomeMode(modeMap[value] || "");
+                    if (value.includes("Median Household")) setIncomeMode("median");
+                    else if (value.includes("Average Household")) setIncomeMode("average");
+                    else if (value.includes("By Profession")) setIncomeMode("profession");
+                    else if (value.includes("Custom Amount")) setIncomeMode("custom");
+                    else setIncomeMode("");
                   }}
                   placeholder="Select income source..."
                 />
@@ -273,9 +276,12 @@
                 {incomeMode === "profession" && (
                   <div style={{marginTop: '1rem'}}>
                     <SearchableSelector
-                      options={Object.keys(professions)}
-                      value={profession}
-                      onChange={setProfession}
+                      options={Object.keys(professions).map(prof => `${prof} ($${professions[prof].toLocaleString()})`)}
+                      value={profession ? `${profession} ($${professions[profession]?.toLocaleString()})` : ''}
+                      onChange={(value) => {
+                        const profName = value.split(' (')[0];
+                        setProfession(profName);
+                      }}
                       placeholder="Search profession..."
                     />
                   </div>

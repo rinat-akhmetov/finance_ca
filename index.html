@@ -1,3263 +1,390 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Canada Housing Affordability — beta</title>
-    <!-- React CDN -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 2rem;
-        line-height: 1.6;
-      }
-
-      .container {
-        max-width: 900px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        overflow: visible;
-      }
-
-      .header {
-        background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
-        color: white;
-        padding: 3rem 2rem;
-        text-align: center;
-      }
-
-      .header h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      }
-
-      .header p {
-        font-size: 1.2rem;
-        opacity: 0.9;
-      }
-
-      .content {
-        padding: 3rem 2rem;
-      }
-
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
-      }
-
-      .form-group {
-        background: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 12px;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: visible;
-      }
-
-      .form-group:hover {
-        border-color: #667eea;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-      }
-
-      .form-group label {
-        display: block;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 0.75rem;
-        font-size: 1.1rem;
-      }
-
-      select,
-      input {
-        width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: white;
-      }
-
-      select:focus,
-      input:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-      }
-
-      .nested-select {
-        margin-top: 1rem;
-        padding: 10px 14px;
-        background: #fff;
-        border: 2px solid #dee2e6;
-      }
-
-      .result {
-        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-        color: white;
-        padding: 2.5rem;
-        border-radius: 16px;
-        box-shadow: 0 15px 35px rgba(116, 185, 255, 0.3);
-        margin-top: 2rem;
-      }
-
-      .result h3 {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 2rem;
-        text-align: center;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      }
-
-      .metrics-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-      }
-
-      .metric {
-        background: rgba(255, 255, 255, 0.15);
-        padding: 1.5rem;
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        position: relative;
-        transition: all 0.3s ease;
-      }
-
-      .metric.excellent {
-        border-left: 4px solid #10b981;
-        background: rgba(16, 185, 129, 0.1);
-      }
-
-      .metric.good {
-        border-left: 4px solid #22c55e;
-        background: rgba(34, 197, 94, 0.1);
-      }
-
-      .metric.caution {
-        border-left: 4px solid #f59e0b;
-        background: rgba(245, 158, 11, 0.1);
-      }
-
-      .metric.warning {
-        border-left: 4px solid #ef4444;
-        background: rgba(239, 68, 68, 0.1);
-      }
-
-      .metric-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .metric-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        margin-bottom: 0.5rem;
-      }
-
-      .metric-benchmark {
-        font-size: 0.8rem;
-        opacity: 0.8;
-        font-style: italic;
-        line-height: 1.3;
-      }
-
-      .metric-status {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-top: 0.5rem;
-      }
-
-      .status-excellent {
-        background: rgba(16, 185, 129, 0.2);
-        color: #10b981;
-      }
-
-      .status-good {
-        background: rgba(34, 197, 94, 0.2);
-        color: #22c55e;
-      }
-
-      .status-caution {
-        background: rgba(245, 158, 11, 0.2);
-        color: #f59e0b;
-      }
-
-      .status-warning {
-        background: rgba(239, 68, 68, 0.2);
-        color: #ef4444;
-      }
-
-      .score {
-        text-align: center;
-        grid-column: 1 / -1;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 2rem;
-        border-radius: 16px;
-        margin-top: 1rem;
-      }
-
-      .score-value {
-        font-size: 4rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      }
-
-      .score-label {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .recommendations {
-        background: rgba(255, 255, 255, 0.95);
-        color: #2c3e50;
-        padding: 2rem;
-        border-radius: 16px;
-        margin-top: 2rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-
-      .recommendations h4 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        color: #2c3e50;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .recommendation-item {
-        background: #f8f9fa;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        border-left: 4px solid #667eea;
-        transition: all 0.3s ease;
-      }
-
-      .recommendation-item:hover {
-        background: #e9ecef;
-        transform: translateX(4px);
-      }
-
-      .recommendation-item.priority-high {
-        border-left-color: #ef4444;
-        background: #fef2f2;
-      }
-
-      .recommendation-item.priority-medium {
-        border-left-color: #f59e0b;
-        background: #fffbeb;
-      }
-
-      .recommendation-item.priority-low {
-        border-left-color: #10b981;
-        background: #f0fdf4;
-      }
-
-      .recommendation-title {
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-        color: #374151;
-      }
-
-      .recommendation-desc {
-        color: #6b7280;
-        line-height: 1.5;
-        font-size: 0.95rem;
-      }
-
-      .comparison-section {
-        margin-top: 2rem;
-        padding: 2rem;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-
-      .comparison-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-      }
-
-      .comparison-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #2c3e50;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .add-city-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-      }
-
-      .add-city-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-      }
-
-      .add-city-btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .comparison-cities {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-      }
-
-      .comparison-city {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 1.5rem;
-        border: 2px solid #e9ecef;
-        position: relative;
-        transition: all 0.3s ease;
-      }
-
-      .comparison-city:hover {
-        border-color: #667eea;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-      }
-
-      .comparison-city.current {
-        border-color: #10b981;
-        background: #f0fdf4;
-      }
-
-      .city-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-      }
-
-      .city-name {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #2c3e50;
-      }
-
-      .remove-city {
-        background: #ef4444;
-        color: white;
-        border: none;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        transition: all 0.2s ease;
-      }
-
-      .remove-city:hover {
-        background: #dc2626;
-        transform: scale(1.1);
-      }
-
-      .city-metrics {
-        display: grid;
-        gap: 0.5rem;
-      }
-
-      .city-metric {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #e5e7eb;
-        font-size: 0.9rem;
-      }
-
-      .city-metric:last-child {
-        border-bottom: none;
-      }
-
-      .city-metric-label {
-        color: #6b7280;
-        font-weight: 500;
-      }
-
-      .city-metric-value {
-        font-weight: 600;
-        color: #374151;
-      }
-
-      .city-metric-value.excellent {
-        color: #10b981;
-      }
-      .city-metric-value.good {
-        color: #22c55e;
-      }
-      .city-metric-value.caution {
-        color: #f59e0b;
-      }
-      .city-metric-value.warning {
-        color: #ef4444;
-      }
-
-      .comparison-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      }
-
-      .comparison-table th {
-        background: #667eea;
-        color: white;
-        padding: 1rem;
-        text-align: left;
-        font-weight: 600;
-      }
-
-      .comparison-table td {
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #e5e7eb;
-      }
-
-      .comparison-table tr:hover {
-        background: #f8f9fa;
-      }
-
-      .suggestions-section {
-        margin-top: 2rem;
-        padding: 2rem;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-
-      .suggestions-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .suggestion-category {
-        margin-bottom: 2rem;
-      }
-
-      .suggestion-category h5 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #e5e7eb;
-      }
-
-      .suggestion-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-      }
-
-      .suggestion-card {
-        background: #f8f9fa;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 1rem;
-        transition: all 0.3s ease;
-        cursor: pointer;
-      }
-
-      .suggestion-card:hover {
-        border-color: #667eea;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-      }
-
-      .suggestion-card.better {
-        border-color: #10b981;
-        background: #f0fdf4;
-      }
-
-      .suggestion-card.affordable {
-        border-color: #3b82f6;
-        background: #eff6ff;
-      }
-
-      .suggestion-name {
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
-      }
-
-      .suggestion-metrics {
-        display: grid;
-        gap: 0.25rem;
-        font-size: 0.85rem;
-        color: #6b7280;
-      }
-
-      .suggestion-highlight {
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 0.75rem;
-        display: inline-block;
-        margin-top: 0.5rem;
-      }
-
-      .scenario-section {
-        margin-top: 2rem;
-        padding: 2rem;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-
-      .scenario-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .scenario-controls {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-      }
-
-      .scenario-control {
-        background: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 12px;
-        border: 2px solid #e9ecef;
-        transition: all 0.3s ease;
-      }
-
-      .scenario-control:hover {
-        border-color: #667eea;
-        background: #f0f4ff;
-      }
-
-      .scenario-label {
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 0.75rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .scenario-current {
-        font-size: 0.85rem;
-        color: #6b7280;
-        font-weight: 400;
-      }
-
-      .scenario-slider {
-        width: 100%;
-        margin: 1rem 0;
-        -webkit-appearance: none;
-        appearance: none;
-        height: 6px;
-        border-radius: 3px;
-        background: #e5e7eb;
-        outline: none;
-      }
-
-      .scenario-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #667eea;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .scenario-slider::-webkit-slider-thumb:hover {
-        background: #5a67d8;
-        transform: scale(1.1);
-      }
-
-      .scenario-slider::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #667eea;
-        cursor: pointer;
-        border: none;
-      }
-
-      .scenario-values {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.85rem;
-        color: #6b7280;
-      }
-
-      .scenario-impact {
-        background: #fff;
-        border: 2px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-top: 1rem;
-      }
-
-      .impact-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-      }
-
-      .impact-item {
-        text-align: center;
-        padding: 0.75rem;
-        background: #f8f9fa;
-        border-radius: 6px;
-      }
-
-      .impact-label {
-        font-size: 0.8rem;
-        color: #6b7280;
-        margin-bottom: 0.25rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .impact-value {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #374151;
-      }
-
-      .impact-change {
-        font-size: 0.75rem;
-        margin-top: 0.25rem;
-        font-weight: 600;
-      }
-
-      .impact-change.positive {
-        color: #10b981;
-      }
-
-      .impact-change.negative {
-        color: #ef4444;
-      }
-
-      .impact-change.neutral {
-        color: #6b7280;
-      }
-
-      .mobile-wizard {
-        display: none;
-      }
-
-      .step-indicator {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 2rem;
-      }
-
-      .step-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: #e5e7eb;
-        margin: 0 8px;
-        transition: all 0.3s ease;
-      }
-
-      .step-dot.active {
-        background: #667eea;
-        transform: scale(1.2);
-      }
-
-      .step-dot.completed {
-        background: #10b981;
-      }
-
-      .mobile-step {
-        display: none;
-      }
-
-      .mobile-step.active {
-        display: block;
-      }
-
-      .step-navigation {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 2rem;
-        gap: 1rem;
-      }
-
-      .step-btn {
-        flex: 1;
-        padding: 1rem;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .step-btn.prev {
-        background: #f3f4f6;
-        color: #374151;
-      }
-
-      .step-btn.next {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-      }
-
-      .step-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      .advanced-toggle {
-        text-align: center;
-        margin: 2rem 0;
-      }
-
-      .advanced-toggle button {
-        background: none;
-        border: 2px solid #667eea;
-        color: #667eea;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-
-      .advanced-toggle button:hover {
-        background: #667eea;
-        color: white;
-      }
-
-      @media (max-width: 768px) {
-        .mobile-wizard {
-          display: block;
-        }
-
-        .desktop-form {
-          display: none;
-        }
-
-        .advanced-features {
-          display: none;
-        }
-
-        .advanced-features.show {
-          display: block;
-        }
-      }
-
-      .searchable-selector {
-        position: relative;
-        width: 100%;
-        z-index: 1;
-      }
-
-      .selector-input-container {
-        position: relative;
-        width: 100%;
-      }
-
-      .selector-input {
-        width: 100%;
-        padding: 12px 50px 12px 16px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: white;
-        cursor: pointer;
-      }
-
-      .selector-input::placeholder {
-        color: #9ca3af;
-        font-style: italic;
-      }
-
-      .selector-input:hover {
-        border-color: #d1d5db;
-        background-color: #f9fafb;
-      }
-
-      .selector-input:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        background-color: white;
-      }
-
-      .selector-input.has-value {
-        color: #374151;
-        padding-right: 70px;
-      }
-
-      .selector-controls {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        pointer-events: none;
-      }
-
-      .selector-clear {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background-color: #6b7280;
-        color: white;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: bold;
-        transition: all 0.2s ease;
-        pointer-events: auto;
-        opacity: 0.7;
-      }
-
-      .selector-clear:hover {
-        background-color: #ef4444;
-        opacity: 1;
-        transform: scale(1.1);
-      }
-
-      .selector-chevron {
-        width: 16px;
-        height: 16px;
-        color: #6b7280;
-        transition: all 0.2s ease;
-        pointer-events: none;
-      }
-
-      .selector-input:hover + .selector-controls .selector-chevron,
-      .selector-input:focus + .selector-controls .selector-chevron {
-        color: #667eea;
-        transform: scale(1.1);
-      }
-
-      .selector-input-container:hover .selector-chevron {
-        color: #667eea;
-        transform: scale(1.1);
-      }
-
-      .selector-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 2px solid #667eea;
-        border-top: none;
-        border-radius: 0 0 8px 8px;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 9999;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        isolation: isolate;
-      }
-
-      .selector-option {
-        padding: 10px 16px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        border-bottom: 1px solid #f1f3f4;
-        position: relative;
-        color: #374151;
-        font-size: 1rem;
-      }
-
-      .selector-option:hover {
-        background-color: #f8f9fa;
-        color: #667eea;
-      }
-
-      .selector-option:last-child {
-        border-bottom: none;
-      }
-
-      .selector-option[aria-selected="true"] {
-        background-color: #667eea;
-        color: white;
-      }
-
-      /* Additional dropdown isolation and positioning fixes */
-      .content {
-        position: relative;
-        overflow: visible;
-      }
-
-      .form-grid {
-        position: relative;
-        overflow: visible;
-      }
-
-      .searchable-selector.dropdown-open {
-        z-index: 10;
-      }
-
-      .selector-dropdown {
-        /* Ensure dropdown always renders above other elements */
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        will-change: transform;
-      }
-
-      /* Prevent any parent from clipping dropdowns */
-      .form-group:has(.searchable-selector .selector-dropdown) {
-        overflow: visible !important;
-        z-index: 9998;
-      }
-
-      /* Touch-friendly improvements */
-      @media (hover: none) and (pointer: coarse) {
-        .form-group:hover {
-          transform: none;
-          box-shadow: none;
-        }
-
-        .suggestion-card:hover {
-          transform: none;
-          box-shadow: none;
-        }
-
-        .add-city-btn:hover {
-          transform: none;
-          box-shadow: none;
-        }
-
-        /* Larger touch targets */
-        .selector-clear {
-          width: 28px;
-          height: 28px;
-          font-size: 14px;
-        }
-
-        .remove-city {
-          width: 32px;
-          height: 32px;
-          font-size: 16px;
-        }
-
-        .metric {
-          min-height: 120px;
-        }
-
-        .suggestion-card {
-          min-height: 140px;
-          padding: 1.25rem;
-        }
-
-        .scenario-slider {
-          height: 12px;
-        }
-
-        .scenario-slider::-webkit-slider-thumb {
-          width: 28px;
-          height: 28px;
-        }
-      }
-
-      @media (max-width: 768px) {
-        body {
-          padding: 0.5rem;
-        }
-
-        .container {
-          border-radius: 12px;
-        }
-
-        .header {
-          padding: 1.5rem 1rem;
-        }
-
-        .header h2 {
-          font-size: 1.8rem;
-        }
-
-        .header p {
-          font-size: 1rem;
-        }
-
-        .content {
-          padding: 1.5rem 1rem;
-        }
-
-        .form-grid {
-          grid-template-columns: 1fr;
-          gap: 1rem;
-        }
-
-        .form-group {
-          padding: 1rem;
-        }
-
-        .metrics-grid {
-          grid-template-columns: 1fr;
-          gap: 1rem;
-        }
-
-        .score {
-          margin-top: 1rem;
-          padding: 1.5rem;
-        }
-
-        .score-value {
-          font-size: 2.5rem;
-        }
-
-        .recommendations {
-          padding: 1.5rem;
-          margin-top: 1.5rem;
-        }
-
-        .suggestions-section {
-          padding: 1.5rem;
-          margin-top: 1.5rem;
-        }
-
-        .suggestion-grid {
-          grid-template-columns: 1fr;
-          gap: 1rem;
-        }
-
-        .comparison-section {
-          padding: 1.5rem;
-          margin-top: 1.5rem;
-        }
-
-        .comparison-cities {
-          grid-template-columns: 1fr;
-          gap: 1rem;
-        }
-
-        .comparison-header {
-          flex-direction: column;
-          gap: 1rem;
-          align-items: stretch;
-        }
-
-        .add-city-btn {
-          width: 100%;
-          padding: 1rem;
-        }
-
-        .comparison-table {
-          font-size: 0.85rem;
-        }
-
-        .comparison-table th,
-        .comparison-table td {
-          padding: 0.5rem;
-        }
-
-        .scenario-section {
-          padding: 1.5rem;
-          margin-top: 1.5rem;
-        }
-
-        .scenario-controls {
-          grid-template-columns: 1fr;
-          gap: 1rem;
-        }
-
-        .impact-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.75rem;
-        }
-
-        .impact-item {
-          padding: 0.5rem;
-        }
-
-        .metric-benchmark {
-          font-size: 0.75rem;
-        }
-
-        .metric-status {
-          font-size: 0.65rem;
-          padding: 1px 6px;
-        }
-      }
-
-      @media (max-width: 480px) {
-        body {
-          padding: 0.25rem;
-        }
-
-        .header h2 {
-          font-size: 1.5rem;
-        }
-
-        .content {
-          padding: 1rem;
-        }
-
-        .impact-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .comparison-table {
-          font-size: 0.75rem;
-        }
-
-        .comparison-table th,
-        .comparison-table td {
-          padding: 0.4rem;
-        }
-
-        .suggestion-card {
-          padding: 0.75rem;
-        }
-
-        .scenario-control {
-          padding: 1rem;
-        }
-
-        .scenario-slider {
-          height: 8px;
-        }
-
-        .scenario-slider::-webkit-slider-thumb {
-          width: 24px;
-          height: 24px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-      /* ----------  ДАННЫЕ (Q1‑2025)  ---------- */
-      let cityData = {
-        Toronto: {
-          price: 1184646,
-          medianIncome: 98063,
-          averageIncome: 105000,
-          utilities: 327.83,
-          propertyTaxRate: 0.00715289,
-          maintenanceRate: 0.01,
-          subsistence: 4600,
-        },
-        Mississauga: {
-          price: 1050000,
-          medianIncome: 92000,
-          averageIncome: 98000,
-          utilities: 320.0,
-          propertyTaxRate: 0.00744,
-          maintenanceRate: 0.01,
-          subsistence: 4600,
-        },
-        Brampton: {
-          price: 980000,
-          medianIncome: 89000,
-          averageIncome: 95000,
-          utilities: 315.0,
-          propertyTaxRate: 0.00756,
-          maintenanceRate: 0.01,
-          subsistence: 4600,
-        },
-        Markham: {
-          price: 1250000,
-          medianIncome: 105000,
-          averageIncome: 115000,
-          utilities: 330.0,
-          propertyTaxRate: 0.00659,
-          maintenanceRate: 0.01,
-          subsistence: 4600,
-        },
-        Vaughan: {
-          utilities: 335.0,
-          propertyTaxRate: 0.00649,
-          maintenanceRate: 0.01,
-          subsistence: 4600,
-        },
-        Oakville: {
-          price: 1450000,
-          medianIncome: 125000,
-          averageIncome: 135000,
-          utilities: 340.0,
-          propertyTaxRate: 0.00612,
-          maintenanceRate: 0.01,
-          subsistence: 4600,
-        },
-        Burlington: {
-          price: 1150000,
-          medianIncome: 96000,
-          averageIncome: 105000,
-          utilities: 318.0,
-          propertyTaxRate: 0.00689,
-          maintenanceRate: 0.01,
-          subsistence: 4600,
-        },
-
-        Vancouver: {
-          price: 1299416,
-          medianIncome: 90061,
-          averageIncome: 98000,
-          utilities: 312.31,
-          propertyTaxRate: 0.00311827,
-          maintenanceRate: 0.01,
-          subsistence: 5000,
-        },
-        Surrey: {
-          price: 950000,
-          medianIncome: 82000,
-          averageIncome: 89000,
-          utilities: 295.0,
-          propertyTaxRate: 0.00362,
-          maintenanceRate: 0.01,
-          subsistence: 5000,
-        },
-        Burnaby: {
-          price: 1100000,
-          medianIncome: 85000,
-          averageIncome: 92000,
-          utilities: 305.0,
-          propertyTaxRate: 0.00345,
-          maintenanceRate: 0.01,
-          subsistence: 5000,
-        },
-        Richmond: {
-          price: 1250000,
-          medianIncome: 88000,
-          averageIncome: 95000,
-          utilities: 310.0,
-          propertyTaxRate: 0.00298,
-          maintenanceRate: 0.01,
-          subsistence: 5000,
-        },
-        Coquitlam: {
-          price: 1050000,
-          medianIncome: 86000,
-          averageIncome: 93000,
-          utilities: 300.0,
-          propertyTaxRate: 0.00389,
-          maintenanceRate: 0.01,
-          subsistence: 5000,
-        },
-        "North Vancouver": {
-          price: 1400000,
-          medianIncome: 98000,
-          averageIncome: 108000,
-          utilities: 320.0,
-          propertyTaxRate: 0.00276,
-          maintenanceRate: 0.01,
-          subsistence: 5000,
-        },
-        "West Vancouver": {
-          price: 2200000,
-          medianIncome: 145000,
-          averageIncome: 165000,
-          utilities: 350.0,
-          propertyTaxRate: 0.00251,
-          maintenanceRate: 0.01,
-          subsistence: 5000,
-        },
-
-        Edmonton: {
-          price: 472103,
-          medianIncome: 101921,
-          averageIncome: 104000,
-          utilities: 442.39,
-          propertyTaxRate: 0.0101391,
-          maintenanceRate: 0.01,
-          subsistence: 4200,
-        },
-        Calgary: {
-          price: 520000,
-          medianIncome: 105000,
-          averageIncome: 108000,
-          utilities: 435.0,
-          propertyTaxRate: 0.00658,
-          maintenanceRate: 0.01,
-          subsistence: 4200,
-        },
-
-        Montreal: {
-          price: 485000,
-          medianIncome: 76000,
-          averageIncome: 82000,
-          utilities: 285.0,
-          propertyTaxRate: 0.00695,
-          maintenanceRate: 0.01,
-          subsistence: 4100,
-        },
-        "Quebec City": {
-          price: 320000,
-          medianIncome: 68000,
-          averageIncome: 74000,
-          utilities: 275.0,
-          propertyTaxRate: 0.00812,
-          maintenanceRate: 0.01,
-          subsistence: 3900,
-        },
-        Ottawa: {
-          price: 650000,
-          medianIncome: 95000,
-          averageIncome: 102000,
-          utilities: 310.0,
-          propertyTaxRate: 0.01236,
-          maintenanceRate: 0.01,
-          subsistence: 4400,
-        },
-        Winnipeg: {
-          price: 385000,
-          medianIncome: 78000,
-          averageIncome: 84000,
-          utilities: 380.0,
-          propertyTaxRate: 0.02285,
-          maintenanceRate: 0.01,
-          subsistence: 3800,
-        },
-        Halifax: {
-          price: 485000,
-          medianIncome: 75000,
-          averageIncome: 81000,
-          utilities: 420.0,
-          propertyTaxRate: 0.01089,
-          maintenanceRate: 0.01,
-          subsistence: 4000,
-        },
-        Saskatoon: {
-          price: 365000,
-          medianIncome: 82000,
-          averageIncome: 88000,
-          utilities: 395.0,
-          propertyTaxRate: 0.01156,
-          maintenanceRate: 0.01,
-          subsistence: 3700,
-        },
-        Regina: {
-          price: 295000,
-          medianIncome: 79000,
-          averageIncome: 85000,
-          utilities: 385.0,
-          propertyTaxRate: 0.01398,
-          maintenanceRate: 0.01,
-          subsistence: 3600,
-        },
-        Victoria: {
-          price: 890000,
-          medianIncome: 82000,
-          averageIncome: 89000,
-          utilities: 295.0,
-          propertyTaxRate: 0.00589,
-          maintenanceRate: 0.01,
-          subsistence: 4800,
-        },
-        Hamilton: {
-          price: 850000,
-          medianIncome: 85000,
-          averageIncome: 92000,
-          utilities: 315.0,
-          propertyTaxRate: 0.01398,
-          maintenanceRate: 0.01,
-          subsistence: 4500,
-        },
-        London: {
-          price: 565000,
-          medianIncome: 75000,
-          averageIncome: 82000,
-          utilities: 298.0,
-          propertyTaxRate: 0.01398,
-          maintenanceRate: 0.01,
-          subsistence: 4200,
-        },
-        Kitchener: {
-          price: 720000,
-          medianIncome: 82000,
-          averageIncome: 89000,
-          utilities: 305.0,
-          propertyTaxRate: 0.01286,
-          maintenanceRate: 0.01,
-          subsistence: 4300,
-        },
-        Windsor: {
-          price: 485000,
-          medianIncome: 72000,
-          averageIncome: 78000,
-          utilities: 292.0,
-          propertyTaxRate: 0.01598,
-          maintenanceRate: 0.01,
-          subsistence: 4100,
-        },
+<head>
+  <meta charset="UTF-8">
+  <title>Canada Housing Affordability — beta</title>
+  
+  <!-- External Dependencies -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  
+  <!-- Application Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // Data layer - separated for clarity
+    const cityData = {
+      "Toronto": { price: 1184646, medianIncome: 98063, averageIncome: 105000, utilities: 327.83, propertyTaxRate: 0.00715289, maintenanceRate: 0.01, subsistence: 4600 },
+      "Vancouver": { price: 1299416, medianIncome: 90061, averageIncome: 98000, utilities: 312.31, propertyTaxRate: 0.00311827, maintenanceRate: 0.01, subsistence: 5000 },
+      "Edmonton": { price: 472103, medianIncome: 101921, averageIncome: 104000, utilities: 442.39, propertyTaxRate: 0.0101391, maintenanceRate: 0.01, subsistence: 4200 },
+      "Calgary": { price: 520000, medianIncome: 105000, averageIncome: 108000, utilities: 435.00, propertyTaxRate: 0.00658, maintenanceRate: 0.01, subsistence: 4200 },
+      "Montreal": { price: 485000, medianIncome: 76000, averageIncome: 82000, utilities: 285.00, propertyTaxRate: 0.00695, maintenanceRate: 0.01, subsistence: 4100 },
+      "Ottawa": { price: 650000, medianIncome: 95000, averageIncome: 102000, utilities: 310.00, propertyTaxRate: 0.01236, maintenanceRate: 0.01, subsistence: 4400 },
+      "Quebec City": { price: 320000, medianIncome: 68000, averageIncome: 74000, utilities: 275.00, propertyTaxRate: 0.00812, maintenanceRate: 0.01, subsistence: 3900 },
+      "Winnipeg": { price: 385000, medianIncome: 78000, averageIncome: 84000, utilities: 380.00, propertyTaxRate: 0.02285, maintenanceRate: 0.01, subsistence: 3800 },
+      "Halifax": { price: 485000, medianIncome: 75000, averageIncome: 81000, utilities: 420.00, propertyTaxRate: 0.01089, maintenanceRate: 0.01, subsistence: 4000 },
+      "Regina": { price: 295000, medianIncome: 79000, averageIncome: 85000, utilities: 385.00, propertyTaxRate: 0.01398, maintenanceRate: 0.01, subsistence: 3600 }
+    };
+
+    const professions = {
+      "Software Engineer": 115000, "Data Scientist": 108000, "Product Manager": 125000,
+      "Registered Nurse": 82000, "Teacher": 75000, "Police Officer": 78000,
+      "Accountant": 72000, "Financial Analyst": 85000, "Marketing Manager": 88000,
+      "Pharmacist": 98000, "Dentist": 165000, "Doctor": 285000, "Lawyer": 145000
+    };
+
+    // Utility functions - separated for clarity
+    function mortgagePayment(principal, annualRate, years) {
+      const monthlyRate = annualRate / 100 / 12;
+      const numberOfPayments = years * 12;
+      return (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
+             (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+    }
+
+    function getMetricStatus(metricType, value) {
+      const benchmarks = {
+        saveTime: { excellent: 6, good: 12, caution: 24 },
+        paymentRatio: { excellent: 25, good: 32, caution: 39 },
+        coverage: { excellent: 150, good: 120, caution: 100 },
+        affordabilityScore: { excellent: 80, good: 60, caution: 40 }
       };
+      
+      const b = benchmarks[metricType];
+      if (!b) return { status: 'good', benchmark: '' };
+      
+      let status, benchmark;
+      
+      if (metricType === 'saveTime') {
+        if (value < b.excellent) { status = 'excellent'; benchmark = 'Very fast saving timeline'; }
+        else if (value < b.good) { status = 'good'; benchmark = 'Reasonable timeline'; }
+        else if (value < b.caution) { status = 'caution'; benchmark = 'Long but manageable'; }
+        else { status = 'warning'; benchmark = 'Very long timeline'; }
+      } else if (metricType === 'paymentRatio') {
+        if (value < b.excellent) { status = 'excellent'; benchmark = 'Well below recommended max'; }
+        else if (value < b.good) { status = 'good'; benchmark = 'Within Canadian guidelines'; }
+        else if (value < b.caution) { status = 'caution'; benchmark = 'Near stress test threshold'; }
+        else { status = 'warning'; benchmark = 'Above recommended maximum'; }
+      } else if (metricType === 'coverage') {
+        if (value > b.excellent) { status = 'excellent'; benchmark = 'Strong income coverage'; }
+        else if (value > b.good) { status = 'good'; benchmark = 'Adequate coverage'; }
+        else if (value > b.caution) { status = 'caution'; benchmark = 'Minimal coverage'; }
+        else { status = 'warning'; benchmark = 'Insufficient income'; }
+      } else if (metricType === 'affordabilityScore') {
+        if (value > b.excellent) { status = 'excellent'; benchmark = 'Highly affordable'; }
+        else if (value > b.good) { status = 'good'; benchmark = 'Moderately affordable'; }
+        else if (value > b.caution) { status = 'caution'; benchmark = 'Limited affordability'; }
+        else { status = 'warning'; benchmark = 'Poor affordability'; }
+      }
+      
+      return { status, benchmark };
+    }
 
-      /* Профессии с средними зарплатами в Канаде  */
-      const professions = {
-        "Software Engineer": 115000,
-        "Data Scientist": 108000,
-        "Product Manager": 125000,
-        "Registered Nurse": 82000,
-        Teacher: 75000,
-        "Police Officer": 78000,
-        Firefighter: 76000,
-        Electrician: 71000,
-        Plumber: 69000,
-        Carpenter: 58000,
-        Accountant: 72000,
-        "Financial Analyst": 85000,
-        "Marketing Manager": 88000,
-        "Sales Manager": 95000,
-        "Human Resources Manager": 92000,
-        Pharmacist: 98000,
-        Dentist: 165000,
-        "Doctor (Family Medicine)": 285000,
-        Lawyer: 145000,
-        "Engineer (Civil)": 89000,
-        "Engineer (Mechanical)": 87000,
-        Architect: 82000,
-        "Project Manager": 105000,
-        "Construction Manager": 98000,
-        "Real Estate Agent": 65000,
-        "Truck Driver": 55000,
-        Chef: 48000,
-        "Graphic Designer": 52000,
-        "Web Developer": 75000,
-        "Database Administrator": 95000,
-        "Network Administrator": 78000,
-        "Administrative Assistant": 45000,
-        "Customer Service Representative": 42000,
-        "Security Guard": 38000,
-        "Retail Manager": 58000,
-        "Bank Teller": 41000,
-        "Insurance Agent": 62000,
-        "Social Worker": 68000,
-        Physiotherapist: 89000,
-        Veterinarian: 95000,
-        "Pilot (Commercial)": 145000,
-        "Air Traffic Controller": 125000,
-        Translator: 55000,
-        Journalist: 58000,
-        Editor: 62000,
-        Librarian: 65000,
-        "Research Scientist": 98000,
-        "Laboratory Technician": 52000,
-        "Radiologic Technologist": 72000,
-        Paramedic: 68000,
-        "Postal Worker": 52000,
-        "Bus Driver": 48000,
-        "Taxi Driver": 35000,
-        "Hair Stylist": 38000,
-        "Personal Trainer": 42000,
-        "Recreation Worker": 45000,
+    // Searchable selector component - reusable
+    function SearchableSelector({ options, value, onChange, placeholder, allowCustom = false }) {
+      const [isOpen, setIsOpen] = React.useState(false);
+      const [searchTerm, setSearchTerm] = React.useState('');
+      const [inputValue, setInputValue] = React.useState(value || '');
+      const [selectedValue, setSelectedValue] = React.useState(value || '');
+      
+      React.useEffect(() => {
+        setInputValue(value || '');
+        setSelectedValue(value || '');
+      }, [value]);
+      
+      const filteredOptions = options.filter(option => 
+        option.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      const handleInputChange = (e) => {
+        const newValue = e.target.value;
+        setInputValue(newValue);
+        setSearchTerm(newValue);
+        setIsOpen(true);
+        
+        if (allowCustom) {
+          onChange(newValue);
+          setSelectedValue(newValue);
+        }
       };
-
-      /* ----------  ПОЛЕЗНЫЕ ФУНКЦИИ  ---------- */
-      function mortgagePayment(P, annualRate, years) {
-        const r = annualRate / 100 / 12;
-        const n = years * 12;
-        return (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-      }
-
-      /* ----------  МЕТРИКИ И БЕНЧМАРКИ  ---------- */
-      function getSuggestedCities(
-        grossIncome,
-        savePct,
-        rateNum,
-        term,
-        currentCity,
-        currentScore
-      ) {
-        const allCities = Object.keys(cityData);
-        const suggestions = [];
-
-        allCities.forEach((cityName) => {
-          if (cityName === currentCity) return;
-
-          const cityInfo = cityData[cityName];
-          const downPayment = cityInfo.price * 0.1;
-          const monthlySaving = (grossIncome * savePct) / 100 / 12;
-          const monthsToSave =
-            monthlySaving > 0 ? downPayment / monthlySaving : 0;
-
-          const loan = cityInfo.price - downPayment;
-          const principalAndInterest =
-            rateNum > 0 ? mortgagePayment(loan, rateNum, term) : 0;
-          const tax = (cityInfo.price * cityInfo.propertyTaxRate) / 12;
-          const maint = (cityInfo.price * cityInfo.maintenanceRate) / 12;
-          const totalHousing =
-            principalAndInterest + cityInfo.utilities + tax + maint;
-
-          const netIncome = (grossIncome * 0.75) / 12;
-          const RI = netIncome - totalHousing;
-
-          let score = 0;
-          if (cityInfo.subsistence) {
-            if (RI >= 1.5 * cityInfo.subsistence) score = 100;
-            else if (RI >= cityInfo.subsistence)
-              score = Math.round(
-                (100 * (RI - cityInfo.subsistence)) /
-                  (0.5 * cityInfo.subsistence)
-              );
-            else score = 0;
-          }
-
-          const paymentShare =
-            grossIncome > 0
-              ? (principalAndInterest / (grossIncome / 12)) * 100
-              : 0;
-          const scoreDiff = score - currentScore;
-
-          suggestions.push({
-            cityName,
-            score,
-            scoreDiff,
-            monthsToSave,
-            paymentShare,
-            price: cityInfo.price,
-            improvement: scoreDiff > 0,
-          });
-        });
-
-        // Sort by score improvement, then by overall score
-        suggestions.sort((a, b) => {
-          if (a.improvement && !b.improvement) return -1;
-          if (!a.improvement && b.improvement) return 1;
-          return b.score - a.score;
-        });
-
-        return {
-          betterOptions: suggestions
-            .filter((s) => s.improvement && s.score > 60)
-            .slice(0, 3),
-          alternatives: suggestions
-            .filter((s) => s.score > 50 && s.monthsToSave < 18)
-            .slice(0, 3),
-          affordableOptions: suggestions
-            .filter((s) => s.paymentShare < 32)
-            .slice(0, 3),
-        };
-      }
-
-      function getRecommendations(
-        monthsToSave,
-        paymentShare,
-        coverage,
-        score,
-        grossIncome,
-        city,
-        cityData
-      ) {
-        const recommendations = [];
-
-        // Payment ratio recommendations
-        if (paymentShare > 39) {
-          recommendations.push({
-            priority: "high",
-            title: "Payment Ratio Too High",
-            desc: `At ${paymentShare.toFixed(
-              1
-            )}%, your payment exceeds safe lending limits. Consider increasing income to $${
-              Math.round((grossIncome * 32) / paymentShare / 1000) * 1000
-            } or looking at lower-priced cities.`,
-          });
-        } else if (paymentShare > 32) {
-          recommendations.push({
-            priority: "medium",
-            title: "Near Stress Test Threshold",
-            desc: `Your ${paymentShare.toFixed(
-              1
-            )}% payment ratio is close to the 39% stress test limit. Consider building a larger emergency fund.`,
-          });
-        }
-
-        // Saving timeline recommendations
-        if (monthsToSave > 24) {
-          recommendations.push({
-            priority: "high",
-            title: "Very Long Saving Timeline",
-            desc: `${monthsToSave.toFixed(
-              1
-            )} months to save is challenging. Increase savings rate by 5% to reduce timeline by ${Math.round(
-              monthsToSave * 0.3
-            )} months.`,
-          });
-        } else if (monthsToSave > 12) {
-          recommendations.push({
-            priority: "medium",
-            title: "Consider Accelerating Savings",
-            desc: `Save an extra $${Math.round(
-              (grossIncome * 0.02) / 12
-            )} monthly to reach your goal ${Math.round(
-              monthsToSave * 0.15
-            )} months faster.`,
-          });
-        }
-
-        // Coverage recommendations
-        if (coverage < 100) {
-          recommendations.push({
-            priority: "high",
-            title: "Insufficient Income Coverage",
-            desc: `Income doesn't cover housing costs. You need approximately $${
-              Math.round((grossIncome * 1.15) / 1000) * 1000
-            } annual income for this market.`,
-          });
-        }
-
-        // Score-based recommendations
-        if (score < 40) {
-          const affordableIncome = grossIncome * 1.4;
-          recommendations.push({
-            priority: "high",
-            title: "Consider Alternative Markets",
-            desc: `Current affordability is poor. Look at cities like Regina, Saskatoon, or Winnipeg, or increase income to $${
-              Math.round(affordableIncome / 1000) * 1000
-            }.`,
-          });
-        } else if (score < 60) {
-          recommendations.push({
-            priority: "medium",
-            title: "Tight Budget Scenario",
-            desc: "You'll meet basic needs but have limited discretionary spending. Consider a 6-month emergency fund before purchasing.",
-          });
-        } else if (score > 80) {
-          recommendations.push({
-            priority: "low",
-            title: "Strong Affordability Position",
-            desc: "Excellent affordability! Consider upgrading to a better neighborhood or building additional savings for renovations.",
-          });
-        }
-
-        // Generic recommendations if none triggered
-        if (recommendations.length === 0) {
-          recommendations.push({
-            priority: "low",
-            title: "Good Overall Position",
-            desc: "Your housing affordability looks solid. Focus on building a 6-month emergency fund and getting pre-approved for your mortgage.",
-          });
-        }
-
-        return recommendations;
-      }
-
-      function getMetricStatus(metricType, value, city) {
-        const benchmarks = {
-          saveTime: {
-            excellent: 6, // < 6 months
-            good: 12, // 6-12 months
-            caution: 24, // 12-24 months
-            // > 24 months = warning
-          },
-          paymentRatio: {
-            excellent: 25, // < 25%
-            good: 32, // 25-32% (Canadian guideline)
-            caution: 39, // 32-39% (stress test zone)
-            // > 39% = warning
-          },
-          coverage: {
-            excellent: 150, // > 150%
-            good: 120, // 120-150%
-            caution: 100, // 100-120%
-            // < 100% = warning
-          },
-          affordabilityScore: {
-            excellent: 80, // > 80
-            good: 60, // 60-80
-            caution: 40, // 40-60
-            // < 40 = warning
-          },
-        };
-
-        const b = benchmarks[metricType];
-        if (!b) return { status: "good", benchmark: "" };
-
-        let status, benchmark;
-
-        if (metricType === "saveTime") {
-          if (value < b.excellent) {
-            status = "excellent";
-            benchmark = "Very fast saving timeline";
-          } else if (value < b.good) {
-            status = "good";
-            benchmark = "Reasonable timeline";
-          } else if (value < b.caution) {
-            status = "caution";
-            benchmark = "Long but manageable";
-          } else {
-            status = "warning";
-            benchmark = "Very long timeline";
-          }
-        } else if (metricType === "paymentRatio") {
-          if (value < b.excellent) {
-            status = "excellent";
-            benchmark = "Well below recommended max";
-          } else if (value < b.good) {
-            status = "good";
-            benchmark = "Within Canadian guidelines";
-          } else if (value < b.caution) {
-            status = "caution";
-            benchmark = "Near stress test threshold";
-          } else {
-            status = "warning";
-            benchmark = "Above recommended maximum";
-          }
-        } else if (metricType === "coverage") {
-          if (value > b.excellent) {
-            status = "excellent";
-            benchmark = "Strong income coverage";
-          } else if (value > b.good) {
-            status = "good";
-            benchmark = "Adequate coverage";
-          } else if (value > b.caution) {
-            status = "caution";
-            benchmark = "Minimal coverage";
-          } else {
-            status = "warning";
-            benchmark = "Insufficient income";
-          }
-        } else if (metricType === "affordabilityScore") {
-          if (value > b.excellent) {
-            status = "excellent";
-            benchmark = "Highly affordable";
-          } else if (value > b.good) {
-            status = "good";
-            benchmark = "Moderately affordable";
-          } else if (value > b.caution) {
-            status = "caution";
-            benchmark = "Limited affordability";
-          } else {
-            status = "warning";
-            benchmark = "Poor affordability";
-          }
-        }
-
-        return { status, benchmark };
-      }
-
-      /* ----------  SEARCHABLE SELECTOR COMPONENT  ---------- */
-      function SearchableSelector({
-        options,
-        value,
-        onChange,
-        placeholder,
-        allowCustom = false,
-      }) {
-        const [isOpen, setIsOpen] = React.useState(false);
-        const [searchTerm, setSearchTerm] = React.useState("");
-        const [inputValue, setInputValue] = React.useState(value || "");
-        const [selectedValue, setSelectedValue] = React.useState(value || "");
-        const dropdownId = React.useRef(
-          `dropdown-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-        );
-
-        React.useEffect(() => {
-          setInputValue(value || "");
-          setSelectedValue(value || "");
-        }, [value]);
-
-        const filteredOptions = options.filter((option) =>
-          option.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
-        const handleInputChange = (e) => {
-          const newValue = e.target.value;
-          setInputValue(newValue);
-          setSearchTerm(newValue);
-          setIsOpen(true);
-
-          if (allowCustom) {
-            onChange(newValue);
-            setSelectedValue(newValue);
-          }
-        };
-
-        const handleOptionSelect = (option) => {
-          setInputValue(option);
-          setSelectedValue(option);
-          setSearchTerm("");
-          setIsOpen(false);
-          onChange(option);
-        };
-
-        const handleClear = (e) => {
-          e.stopPropagation();
-          setInputValue("");
-          setSelectedValue("");
-          setSearchTerm("");
-          setIsOpen(true);
-          onChange("");
-        };
-
-        const handleInputFocus = () => {
-          setIsOpen(true);
-          if (!allowCustom && selectedValue) {
-            setSearchTerm("");
-            setInputValue("");
-          } else {
-            setSearchTerm(inputValue);
-          }
-        };
-
-        const handleInputBlur = () => {
-          setTimeout(() => {
-            setIsOpen(false);
-            if (!allowCustom && selectedValue && !searchTerm) {
-              setInputValue(selectedValue);
-            }
-          }, 200);
-        };
-
-        const handleKeyDown = (e) => {
-          if (e.key === "Escape") {
-            setIsOpen(false);
-            if (!allowCustom && selectedValue) {
-              setInputValue(selectedValue);
-            }
-          } else if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setIsOpen(true);
-          } else if (
-            (e.key === "Backspace" || e.key === "Delete") &&
-            !inputValue &&
-            selectedValue
-          ) {
-            handleClear(e);
-          }
-        };
-
-        const handleContainerClick = () => {
-          setIsOpen(true);
-        };
-
-        const displayValue = isOpen && !allowCustom ? searchTerm : inputValue;
-        const hasValue = selectedValue && selectedValue.length > 0;
-        const showPlaceholder = !hasValue && !isOpen;
-
-        return (
-          <div
-            className={`searchable-selector ${isOpen ? "dropdown-open" : ""}`}
-          >
-            <div
-              className="selector-input-container"
-              onClick={handleContainerClick}
-            >
-              <input
-                type="text"
-                value={displayValue}
-                onChange={handleInputChange}
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-                onKeyDown={handleKeyDown}
-                placeholder={showPlaceholder ? placeholder : ""}
-                className={`selector-input ${hasValue ? "has-value" : ""}`}
-                aria-label={placeholder}
-                aria-haspopup="listbox"
-                aria-expanded={isOpen}
-                role="combobox"
-                autoComplete="off"
-              />
-              <div className="selector-controls">
-                {hasValue && (
-                  <button
-                    type="button"
-                    className="selector-clear"
-                    onClick={handleClear}
-                    aria-label="Clear selection"
-                    title="Clear selection"
-                  >
-                    ×
-                  </button>
-                )}
-                <svg
-                  className="selector-chevron"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                  aria-hidden="true"
+      
+      const handleOptionSelect = (option) => {
+        setInputValue(option);
+        setSelectedValue(option);
+        setSearchTerm('');
+        setIsOpen(false);
+        onChange(option);
+      };
+      
+      const handleClear = (e) => {
+        e.stopPropagation();
+        setInputValue('');
+        setSelectedValue('');
+        setSearchTerm('');
+        setIsOpen(true);
+        onChange('');
+      };
+      
+      const displayValue = isOpen && !allowCustom ? searchTerm : inputValue;
+      const hasValue = selectedValue && selectedValue.length > 0;
+      const showPlaceholder = !hasValue && !isOpen;
+      
+      return (
+        <div className={`searchable-selector ${isOpen ? 'dropdown-open' : ''}`}>
+          <div className="selector-input-container" onClick={() => setIsOpen(true)}>
+            <input
+              type="text"
+              value={displayValue}
+              onChange={handleInputChange}
+              onFocus={() => setIsOpen(true)}
+              onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+              placeholder={showPlaceholder ? placeholder : ''}
+              className={`selector-input ${hasValue ? 'has-value' : ''}`}
+              autoComplete="off"
+            />
+            <div className="selector-controls">
+              {hasValue && (
+                <button type="button" className="selector-clear" onClick={handleClear}>×</button>
+              )}
+              <svg className="selector-chevron" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="2" fill="none"/>
+              </svg>
+            </div>
+          </div>
+          {isOpen && filteredOptions.length > 0 && (
+            <div className="selector-dropdown">
+              {filteredOptions.slice(0, 10).map((option, index) => (
+                <div
+                  key={`${option}-${index}`}
+                  className="selector-option"
+                  onMouseDown={() => handleOptionSelect(option)}
                 >
-                  <path
-                    d="M4 6l4 4 4-4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                  {option}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Main application component
+    function App() {
+      const cities = Object.keys(cityData);
+      
+      // Form state
+      const [city, setCity] = React.useState('');
+      const [incomeMode, setIncomeMode] = React.useState('');
+      const [customIncome, setCustomIncome] = React.useState("");
+      const [profession, setProfession] = React.useState('');
+      const [savingPreset, setSavingPreset] = React.useState('');
+      const [customSave, setCustomSave] = React.useState("");
+      const [rate, setRate] = React.useState('');
+      const [term, setTerm] = React.useState(25);
+
+      // Core calculations
+      const c = city ? cityData[city] : null;
+      const hasValidData = c && incomeMode && (savingPreset || customSave) && rate;
+      
+      const grossIncome = hasValidData ? (
+        incomeMode === "median" ? c.medianIncome :
+        incomeMode === "average" ? c.averageIncome :
+        incomeMode === "profession" ? professions[profession] || 0 :
+        parseFloat(customIncome) || 0
+      ) : 0;
+
+      const savePct = hasValidData ? (
+        savingPreset === "custom" ? parseFloat(customSave) || 0 : parseFloat(savingPreset) || 0
+      ) : 0;
+      
+      const downPayment = hasValidData ? c.price * 0.10 : 0;
+      const monthlySaving = grossIncome * savePct / 100 / 12;
+      const monthsToSave = monthlySaving > 0 ? downPayment / monthlySaving : 0;
+
+      const loan = hasValidData ? c.price - downPayment : 0;
+      const rateNum = parseFloat(rate) || 0;
+      const principalAndInterest = hasValidData && rateNum > 0 ? mortgagePayment(loan, rateNum, term) : 0;
+      const tax = hasValidData ? c.price * c.propertyTaxRate / 12 : 0;
+      const maint = hasValidData ? c.price * c.maintenanceRate / 12 : 0;
+      const utilities = hasValidData ? c.utilities : 0;
+      const totalHousing = principalAndInterest + utilities + tax + maint;
+
+      const netIncome = grossIncome * 0.75 / 12;
+      const RI = netIncome - totalHousing;
+
+      let score = 0;
+      if (hasValidData && c.subsistence) {
+        if (RI >= 1.5 * c.subsistence) score = 100;
+        else if (RI >= c.subsistence) score = Math.round(100 * (RI - c.subsistence) / (0.5 * c.subsistence));
+        else score = 0;
+      }
+
+      const paymentShare = grossIncome > 0 ? principalAndInterest / (grossIncome / 12) * 100 : 0;
+      const coverage = totalHousing > 0 ? netIncome / totalHousing * 100 : 0;
+
+      // Status indicators
+      const saveTimeStatus = getMetricStatus('saveTime', monthsToSave);
+      const paymentRatioStatus = getMetricStatus('paymentRatio', paymentShare);
+      const coverageStatus = getMetricStatus('coverage', coverage);
+      const scoreStatus = getMetricStatus('affordabilityScore', score);
+
+      return (
+        <div className="container">
+          <div className="header">
+            <h2>Canadian Housing Affordability Tool</h2>
+            <p>Analyze housing costs and affordability across major Canadian cities</p>
+          </div>
+
+          <div className="content">
+            <div className="form-grid">
+              <div className="form-group">
+                <label>City</label>
+                <SearchableSelector
+                  options={cities}
+                  value={city}
+                  onChange={setCity}
+                  placeholder="Search or select a city..."
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Income Source</label>
+                <SearchableSelector
+                  options={["Median Household", "Average Household", "By Profession", "Custom Amount"]}
+                  value={incomeMode === "median" ? "Median Household" :
+                         incomeMode === "average" ? "Average Household" :
+                         incomeMode === "profession" ? "By Profession" : 
+                         incomeMode === "custom" ? "Custom Amount" : ""}
+                  onChange={(value) => {
+                    const modeMap = {
+                      "Median Household": "median",
+                      "Average Household": "average", 
+                      "By Profession": "profession",
+                      "Custom Amount": "custom"
+                    };
+                    setIncomeMode(modeMap[value] || "");
+                  }}
+                  placeholder="Select income source..."
+                />
+                
+                {incomeMode === "profession" && (
+                  <div style={{marginTop: '1rem'}}>
+                    <SearchableSelector
+                      options={Object.keys(professions)}
+                      value={profession}
+                      onChange={setProfession}
+                      placeholder="Search profession..."
+                    />
+                  </div>
+                )}
+
+                {incomeMode === "custom" && (
+                  <div style={{marginTop: '1rem'}}>
+                    <SearchableSelector
+                      options={["$50,000", "$75,000", "$100,000", "$125,000", "$150,000"]}
+                      value={customIncome}
+                      onChange={setCustomIncome}
+                      placeholder="Enter income amount..."
+                      allowCustom={true}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label>Savings Rate</label>
+                <SearchableSelector
+                  options={["Average Canada (10%)", "Aggressive Saver (15%)", "Super Saver (20%)", "Custom Rate"]}
+                  value={savingPreset === "10" ? "Average Canada (10%)" :
+                         savingPreset === "15" ? "Aggressive Saver (15%)" :
+                         savingPreset === "20" ? "Super Saver (20%)" : 
+                         savingPreset === "custom" ? "Custom Rate" : ""}
+                  onChange={(value) => {
+                    if (value.includes("10%")) setSavingPreset("10");
+                    else if (value.includes("15%")) setSavingPreset("15");
+                    else if (value.includes("20%")) setSavingPreset("20");
+                    else if (value.includes("Custom")) setSavingPreset("custom");
+                    else setSavingPreset("");
+                  }}
+                  placeholder="Select savings rate..."
+                />
+                
+                {savingPreset === "custom" && (
+                  <div style={{marginTop: '1rem'}}>
+                    <SearchableSelector
+                      options={["5%", "8%", "12%", "18%", "25%"]}
+                      value={customSave}
+                      onChange={setCustomSave}
+                      placeholder="Enter savings rate..."
+                      allowCustom={true}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label>Mortgage Rate</label>
+                <SearchableSelector
+                  options={["8% (Current Average)", "12% (Higher Rate)", "18% (Stress Test)"]}
+                  value={rate === "8" ? "8% (Current Average)" :
+                         rate === "12" ? "12% (Higher Rate)" : 
+                         rate === "18" ? "18% (Stress Test)" : ""}
+                  onChange={(value) => {
+                    if (value.includes("8%")) setRate("8");
+                    else if (value.includes("12%")) setRate("12");
+                    else if (value.includes("18%")) setRate("18");
+                    else setRate("");
+                  }}
+                  placeholder="Select mortgage rate..."
+                />
               </div>
             </div>
-            {isOpen && filteredOptions.length > 0 && (
-              <div
-                className="selector-dropdown"
-                role="listbox"
-                data-dropdown-id={dropdownId.current}
-              >
-                {filteredOptions.slice(0, 10).map((option, index) => (
-                  <div
-                    key={`${option}-${index}`}
-                    className="selector-option"
-                    onMouseDown={() => handleOptionSelect(option)}
-                    role="option"
-                    aria-selected={selectedValue === option}
-                  >
-                    {option}
+
+            {hasValidData && (
+              <div className="result">
+                <h3>Affordability Analysis</h3>
+                <div className="metrics-grid">
+                  <div className={`metric ${saveTimeStatus.status}`}>
+                    <div className="metric-label">Time to Save Down Payment</div>
+                    <div className="metric-value">{monthsToSave.toFixed(1)} months</div>
+                    <div className="metric-benchmark">{saveTimeStatus.benchmark}</div>
+                    <div className={`metric-status status-${saveTimeStatus.status}`}>{saveTimeStatus.status}</div>
                   </div>
-                ))}
+                  
+                  <div className={`metric ${paymentRatioStatus.status}`}>
+                    <div className="metric-label">Payment to Income Ratio</div>
+                    <div className="metric-value">{paymentShare.toFixed(1)}%</div>
+                    <div className="metric-benchmark">{paymentRatioStatus.benchmark}</div>
+                    <div className={`metric-status status-${paymentRatioStatus.status}`}>{paymentRatioStatus.status}</div>
+                  </div>
+                  
+                  <div className={`metric ${coverageStatus.status}`}>
+                    <div className="metric-label">Income Coverage</div>
+                    <div className="metric-value">{coverage.toFixed(1)}%</div>
+                    <div className="metric-benchmark">{coverageStatus.benchmark}</div>
+                    <div className={`metric-status status-${coverageStatus.status}`}>{coverageStatus.status}</div>
+                  </div>
+                  
+                  <div className={`score ${scoreStatus.status}`}>
+                    <div className="score-value">{score}</div>
+                    <div className="score-label">Affordability Score</div>
+                    <div className="metric-benchmark" style={{marginTop: '0.5rem', fontSize: '1rem'}}>{scoreStatus.benchmark}</div>
+                    <div className={`metric-status status-${scoreStatus.status}`} style={{marginTop: '0.5rem'}}>{scoreStatus.status}</div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
-        );
-      }
-
-      /* ----------  UI‑ПРИЛОЖЕНИЕ  ---------- */
-      function App() {
-        const cities = Object.keys(cityData);
-        const [city, setCity] = React.useState("");
-        const [incomeMode, setIncomeMode] = React.useState("");
-        const [customIncome, setCustomIncome] = React.useState("");
-        const [profession, setProfession] = React.useState("");
-        const [savingPreset, setSavingPreset] = React.useState("");
-        const [customSave, setCustomSave] = React.useState("");
-        const [rate, setRate] = React.useState("");
-        const [term, setTerm] = React.useState(25);
-
-        // Comparison state
-        const [comparisonCities, setComparisonCities] = React.useState([]);
-        const [showComparison, setShowComparison] = React.useState(false);
-
-        // Scenario modeling state
-        const [scenarioIncome, setScenarioIncome] = React.useState(null);
-        const [scenarioSavings, setScenarioSavings] = React.useState(null);
-        const [scenarioRate, setScenarioRate] = React.useState(null);
-
-        // Progressive disclosure for mobile
-        const [isMobile, setIsMobile] = React.useState(false);
-        const [currentStep, setCurrentStep] = React.useState(1);
-        const [showAdvanced, setShowAdvanced] = React.useState(false);
-
-        React.useEffect(() => {
-          const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 768);
-          };
-          checkMobile();
-          window.addEventListener("resize", checkMobile);
-          return () => window.removeEventListener("resize", checkMobile);
-        }, []);
-
-        const canGoToStep = (step) => {
-          if (step === 1) return true;
-          if (step === 2) return city !== "";
-          if (step === 3) return city !== "" && incomeMode !== "";
-          if (step === 4)
-            return (
-              city !== "" &&
-              incomeMode !== "" &&
-              (savingPreset !== "" || customSave !== "")
-            );
-          return true;
-        };
-
-        const nextStep = () => {
-          if (currentStep < 4 && canGoToStep(currentStep + 1)) {
-            setCurrentStep(currentStep + 1);
-          }
-        };
-
-        const prevStep = () => {
-          if (currentStep > 1) {
-            setCurrentStep(currentStep - 1);
-          }
-        };
-
-        /* ----------  Расчёты  ---------- */
-        const c = city ? cityData[city] : null;
-        const hasValidData =
-          c && incomeMode && (savingPreset || customSave) && rate;
-
-        const grossIncome = hasValidData
-          ? incomeMode === "median"
-            ? c.medianIncome
-            : incomeMode === "average"
-            ? c.averageIncome
-            : incomeMode === "profession"
-            ? professions[profession] || 0
-            : parseFloat(customIncome) || 0
-          : 0;
-
-        const savePct = hasValidData
-          ? savingPreset === "custom"
-            ? parseFloat(customSave) || 0
-            : parseFloat(savingPreset) || 0
-          : 0;
-
-        const dpFrac = 0.1; // минимальный CMHC
-        const downPayment = hasValidData ? c.price * dpFrac : 0;
-        const monthlySaving = (grossIncome * savePct) / 100 / 12;
-        const monthsToSave =
-          monthlySaving > 0 ? downPayment / monthlySaving : 0;
-
-        const loan = hasValidData ? c.price - downPayment : 0;
-        const rateNum = parseFloat(rate) || 0;
-        const principalAndInterest =
-          hasValidData && rateNum > 0
-            ? mortgagePayment(loan, rateNum, term)
-            : 0;
-        const tax = hasValidData ? (c.price * c.propertyTaxRate) / 12 : 0;
-        const maint = hasValidData ? (c.price * c.maintenanceRate) / 12 : 0;
-        const utilities = hasValidData ? c.utilities : 0;
-        const totalHousing = principalAndInterest + utilities + tax + maint;
-
-        const netIncome = (grossIncome * 0.75) / 12; // грубое after‑tax ≈ ‑25 %
-        const RI = netIncome - totalHousing;
-
-        let score = 0;
-        if (hasValidData && c.subsistence) {
-          if (RI >= 1.5 * c.subsistence) score = 100;
-          else if (RI >= c.subsistence)
-            score = Math.round(
-              (100 * (RI - c.subsistence)) / (0.5 * c.subsistence)
-            );
-          else score = 0;
-        }
-
-        const paymentShare =
-          grossIncome > 0
-            ? (principalAndInterest / (grossIncome / 12)) * 100
-            : 0;
-        const coverage =
-          totalHousing > 0 ? (netIncome / totalHousing) * 100 : 0;
-
-        // Get status indicators for each metric
-        const saveTimeStatus = getMetricStatus("saveTime", monthsToSave, city);
-        const paymentRatioStatus = getMetricStatus(
-          "paymentRatio",
-          paymentShare,
-          city
-        );
-        const coverageStatus = getMetricStatus("coverage", coverage, city);
-        const scoreStatus = getMetricStatus("affordabilityScore", score, city);
-
-        // Get personalized recommendations
-        const recommendations = hasValidData
-          ? getRecommendations(
-              monthsToSave,
-              paymentShare,
-              coverage,
-              score,
-              grossIncome,
-              city,
-              c
-            )
-          : [];
-
-        // Get city suggestions
-        const citySuggestions = hasValidData
-          ? getSuggestedCities(grossIncome, savePct, rateNum, term, city, score)
-          : { betterOptions: [], alternatives: [], affordableOptions: [] };
-
-        // Scenario modeling calculations
-        const currentIncome = grossIncome;
-        const currentSavings = savePct;
-        const currentRate = rateNum;
-
-        // Use scenario values if set, otherwise use current values
-        const modelIncome =
-          scenarioIncome !== null ? scenarioIncome : currentIncome;
-        const modelSavings =
-          scenarioSavings !== null ? scenarioSavings : currentSavings;
-        const modelRate = scenarioRate !== null ? scenarioRate : currentRate;
-
-        // Calculate scenario metrics
-        let scenarioMetrics = null;
-        if (hasValidData && c) {
-          const sDownPayment = c.price * 0.1;
-          const sMonthlySaving = (modelIncome * modelSavings) / 100 / 12;
-          const sMonthsToSave =
-            sMonthlySaving > 0 ? sDownPayment / sMonthlySaving : 0;
-
-          const sLoan = c.price - sDownPayment;
-          const sPrincipalAndInterest =
-            modelRate > 0 ? mortgagePayment(sLoan, modelRate, term) : 0;
-          const sTax = (c.price * c.propertyTaxRate) / 12;
-          const sMaint = (c.price * c.maintenanceRate) / 12;
-          const sTotalHousing =
-            sPrincipalAndInterest + c.utilities + sTax + sMaint;
-
-          const sNetIncome = (modelIncome * 0.75) / 12;
-          const sRI = sNetIncome - sTotalHousing;
-
-          let sScore = 0;
-          if (c.subsistence) {
-            if (sRI >= 1.5 * c.subsistence) sScore = 100;
-            else if (sRI >= c.subsistence)
-              sScore = Math.round(
-                (100 * (sRI - c.subsistence)) / (0.5 * c.subsistence)
-              );
-            else sScore = 0;
-          }
-
-          const sPaymentShare =
-            modelIncome > 0
-              ? (sPrincipalAndInterest / (modelIncome / 12)) * 100
-              : 0;
-          const sCoverage =
-            sTotalHousing > 0 ? (sNetIncome / sTotalHousing) * 100 : 0;
-
-          scenarioMetrics = {
-            monthsToSave: sMonthsToSave,
-            paymentShare: sPaymentShare,
-            coverage: sCoverage,
-            score: sScore,
-            changes: {
-              monthsToSave: sMonthsToSave - monthsToSave,
-              paymentShare: sPaymentShare - paymentShare,
-              coverage: sCoverage - coverage,
-              score: sScore - score,
-            },
-          };
-        }
-
-        // Reset scenario when inputs change
-        React.useEffect(() => {
-          setScenarioIncome(null);
-          setScenarioSavings(null);
-          setScenarioRate(null);
-        }, [
-          city,
-          incomeMode,
-          customIncome,
-          profession,
-          savingPreset,
-          customSave,
-          rate,
-        ]);
-
-        // Comparison functions
-        const calculateCityMetrics = (
-          cityName,
-          grossIncome,
-          savePct,
-          rateNum,
-          term
-        ) => {
-          const cityInfo = cityData[cityName];
-          if (!cityInfo) return null;
-
-          const downPayment = cityInfo.price * 0.1;
-          const monthlySaving = (grossIncome * savePct) / 100 / 12;
-          const monthsToSave =
-            monthlySaving > 0 ? downPayment / monthlySaving : 0;
-
-          const loan = cityInfo.price - downPayment;
-          const principalAndInterest =
-            rateNum > 0 ? mortgagePayment(loan, rateNum, term) : 0;
-          const tax = (cityInfo.price * cityInfo.propertyTaxRate) / 12;
-          const maint = (cityInfo.price * cityInfo.maintenanceRate) / 12;
-          const totalHousing =
-            principalAndInterest + cityInfo.utilities + tax + maint;
-
-          const netIncome = (grossIncome * 0.75) / 12;
-          const RI = netIncome - totalHousing;
-
-          let score = 0;
-          if (cityInfo.subsistence) {
-            if (RI >= 1.5 * cityInfo.subsistence) score = 100;
-            else if (RI >= cityInfo.subsistence)
-              score = Math.round(
-                (100 * (RI - cityInfo.subsistence)) /
-                  (0.5 * cityInfo.subsistence)
-              );
-            else score = 0;
-          }
-
-          const paymentShare =
-            grossIncome > 0
-              ? (principalAndInterest / (grossIncome / 12)) * 100
-              : 0;
-          const coverage =
-            totalHousing > 0 ? (netIncome / totalHousing) * 100 : 0;
-
-          return {
-            cityName,
-            price: cityInfo.price,
-            monthsToSave,
-            paymentShare,
-            coverage,
-            score,
-            totalHousing: totalHousing * 12,
-            saveTimeStatus: getMetricStatus("saveTime", monthsToSave),
-            paymentRatioStatus: getMetricStatus("paymentRatio", paymentShare),
-            coverageStatus: getMetricStatus("coverage", coverage),
-            scoreStatus: getMetricStatus("affordabilityScore", score),
-          };
-        };
-
-        const addToComparison = () => {
-          if (
-            city &&
-            hasValidData &&
-            comparisonCities.length < 3 &&
-            !comparisonCities.some((c) => c.cityName === city)
-          ) {
-            const metrics = calculateCityMetrics(
-              city,
-              grossIncome,
-              savePct,
-              rateNum,
-              term
-            );
-            if (metrics) {
-              setComparisonCities([...comparisonCities, metrics]);
-              setShowComparison(true);
-            }
-          }
-        };
-
-        const removeFromComparison = (cityName) => {
-          setComparisonCities(
-            comparisonCities.filter((c) => c.cityName !== cityName)
-          );
-          if (comparisonCities.length === 1) {
-            setShowComparison(false);
-          }
-        };
-
-        /* ----------  UI  ---------- */
-        return (
-          <div className="container">
-            <div className="header">
-              <h2>Canadian Housing Affordability Tool</h2>
-              <p>
-                Analyze housing costs and affordability across major Canadian
-                cities
-              </p>
-            </div>
-
-            <div className="content">
-              {/* Mobile Wizard */}
-              <div className="mobile-wizard">
-                <div className="step-indicator">
-                  {[1, 2, 3, 4].map((step) => (
-                    <div
-                      key={step}
-                      className={`step-dot ${
-                        step === currentStep
-                          ? "active"
-                          : step < currentStep
-                          ? "completed"
-                          : ""
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                <div
-                  className={`mobile-step ${currentStep === 1 ? "active" : ""}`}
-                >
-                  <div className="form-group">
-                    <label>Choose Your City</label>
-                    <SearchableSelector
-                      options={cities}
-                      value={city}
-                      onChange={setCity}
-                      placeholder="Search or select a city..."
-                    />
-                  </div>
-                </div>
-
-                <div
-                  className={`mobile-step ${currentStep === 2 ? "active" : ""}`}
-                >
-                  <div className="form-group">
-                    <label>Income Source</label>
-                    <SearchableSelector
-                      options={[
-                        "Median Household",
-                        "Average Household",
-                        "By Profession",
-                        "Custom Amount",
-                      ]}
-                      value={
-                        incomeMode === "median"
-                          ? "Median Household"
-                          : incomeMode === "average"
-                          ? "Average Household"
-                          : incomeMode === "profession"
-                          ? "By Profession"
-                          : incomeMode === "custom"
-                          ? "Custom Amount"
-                          : ""
-                      }
-                      onChange={(value) => {
-                        const modeMap = {
-                          "Median Household": "median",
-                          "Average Household": "average",
-                          "By Profession": "profession",
-                          "Custom Amount": "custom",
-                        };
-                        setIncomeMode(modeMap[value] || "");
-                      }}
-                      placeholder="Select income source..."
-                    />
-
-                    {incomeMode === "profession" && (
-                      <div style={{ marginTop: "1rem" }}>
-                        <SearchableSelector
-                          options={Object.keys(professions)}
-                          value={profession}
-                          onChange={setProfession}
-                          placeholder="Search profession..."
-                        />
-                      </div>
-                    )}
-
-                    {incomeMode === "custom" && (
-                      <div style={{ marginTop: "1rem" }}>
-                        <SearchableSelector
-                          options={[
-                            "$50,000",
-                            "$60,000",
-                            "$70,000",
-                            "$80,000",
-                            "$90,000",
-                            "$100,000",
-                            "$120,000",
-                            "$150,000",
-                            "$200,000",
-                          ]}
-                          value={customIncome}
-                          onChange={setCustomIncome}
-                          placeholder="Type or select income (e.g., 85000)..."
-                          allowCustom={true}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  className={`mobile-step ${currentStep === 3 ? "active" : ""}`}
-                >
-                  <div className="form-group">
-                    <label>Savings Rate</label>
-                    <SearchableSelector
-                      options={[
-                        "Average Canada (10%)",
-                        `Average ${city || "City"} (12%)`,
-                        "Aggressive Saver (15%)",
-                        "Super Saver (20%)",
-                        "Custom Rate",
-                      ]}
-                      value={
-                        savingPreset === "10"
-                          ? "Average Canada (10%)"
-                          : savingPreset === "12"
-                          ? `Average ${city || "City"} (12%)`
-                          : savingPreset === "15"
-                          ? "Aggressive Saver (15%)"
-                          : savingPreset === "20"
-                          ? "Super Saver (20%)"
-                          : savingPreset === "custom"
-                          ? "Custom Rate"
-                          : ""
-                      }
-                      onChange={(value) => {
-                        if (value.includes("10%")) setSavingPreset("10");
-                        else if (value.includes("12%")) setSavingPreset("12");
-                        else if (value.includes("15%")) setSavingPreset("15");
-                        else if (value.includes("20%")) setSavingPreset("20");
-                        else if (value.includes("Custom"))
-                          setSavingPreset("custom");
-                        else setSavingPreset("");
-                      }}
-                      placeholder="Select savings rate..."
-                    />
-
-                    {savingPreset === "custom" && (
-                      <div style={{ marginTop: "1rem" }}>
-                        <SearchableSelector
-                          options={[
-                            "5%",
-                            "8%",
-                            "10%",
-                            "12%",
-                            "15%",
-                            "18%",
-                            "20%",
-                            "25%",
-                            "30%",
-                          ]}
-                          value={customSave}
-                          onChange={setCustomSave}
-                          placeholder="Type or select savings rate (e.g., 14)..."
-                          allowCustom={true}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  className={`mobile-step ${currentStep === 4 ? "active" : ""}`}
-                >
-                  <div className="form-group">
-                    <label>Mortgage Rate</label>
-                    <SearchableSelector
-                      options={[
-                        "8% (Current Average)",
-                        "12% (Higher Rate)",
-                        "18% (Stress Test)",
-                      ]}
-                      value={
-                        rate === "8"
-                          ? "8% (Current Average)"
-                          : rate === "12"
-                          ? "12% (Higher Rate)"
-                          : rate === "18"
-                          ? "18% (Stress Test)"
-                          : ""
-                      }
-                      onChange={(value) => {
-                        if (value.includes("8%")) setRate("8");
-                        else if (value.includes("12%")) setRate("12");
-                        else if (value.includes("18%")) setRate("18");
-                        else setRate("");
-                      }}
-                      placeholder="Select mortgage rate..."
-                    />
-                  </div>
-                </div>
-
-                <div className="step-navigation">
-                  <button
-                    className="step-btn prev"
-                    onClick={prevStep}
-                    disabled={currentStep === 1}
-                  >
-                    Previous
-                  </button>
-                  <button
-                    className="step-btn next"
-                    onClick={nextStep}
-                    disabled={
-                      !canGoToStep(currentStep + 1) || currentStep === 4
-                    }
-                  >
-                    {currentStep === 4 ? "View Results" : "Next"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Desktop Form */}
-              <div className="form-grid desktop-form">
-                <div className="form-group">
-                  <label>City</label>
-                  <SearchableSelector
-                    options={cities}
-                    value={city}
-                    onChange={setCity}
-                    placeholder="Search or select a city..."
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Income Source</label>
-                  <SearchableSelector
-                    options={[
-                      "Median Household",
-                      "Average Household",
-                      "By Profession",
-                      "Custom Amount",
-                    ]}
-                    value={
-                      incomeMode === "median"
-                        ? "Median Household"
-                        : incomeMode === "average"
-                        ? "Average Household"
-                        : incomeMode === "profession"
-                        ? "By Profession"
-                        : incomeMode === "custom"
-                        ? "Custom Amount"
-                        : ""
-                    }
-                    onChange={(value) => {
-                      const modeMap = {
-                        "Median Household": "median",
-                        "Average Household": "average",
-                        "By Profession": "profession",
-                        "Custom Amount": "custom",
-                      };
-                      setIncomeMode(modeMap[value] || "");
-                    }}
-                    placeholder="Select income source..."
-                  />
-
-                  {incomeMode === "profession" && (
-                    <div style={{ marginTop: "1rem" }}>
-                      <SearchableSelector
-                        options={Object.keys(professions)}
-                        value={profession}
-                        onChange={setProfession}
-                        placeholder="Search profession..."
-                      />
-                    </div>
-                  )}
-
-                  {incomeMode === "custom" && (
-                    <div style={{ marginTop: "1rem" }}>
-                      <SearchableSelector
-                        options={[
-                          "$50,000",
-                          "$60,000",
-                          "$70,000",
-                          "$80,000",
-                          "$90,000",
-                          "$100,000",
-                          "$120,000",
-                          "$150,000",
-                          "$200,000",
-                        ]}
-                        value={customIncome}
-                        onChange={setCustomIncome}
-                        placeholder="Type or select income (e.g., 85000)..."
-                        allowCustom={true}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Savings Rate</label>
-                  <SearchableSelector
-                    options={[
-                      "Average Canada (10%)",
-                      `Average ${city || "City"} (12%)`,
-                      "Aggressive Saver (15%)",
-                      "Super Saver (20%)",
-                      "Custom Rate",
-                    ]}
-                    value={
-                      savingPreset === "10"
-                        ? "Average Canada (10%)"
-                        : savingPreset === "12"
-                        ? `Average ${city || "City"} (12%)`
-                        : savingPreset === "15"
-                        ? "Aggressive Saver (15%)"
-                        : savingPreset === "20"
-                        ? "Super Saver (20%)"
-                        : savingPreset === "custom"
-                        ? "Custom Rate"
-                        : ""
-                    }
-                    onChange={(value) => {
-                      if (value.includes("10%")) setSavingPreset("10");
-                      else if (value.includes("12%")) setSavingPreset("12");
-                      else if (value.includes("15%")) setSavingPreset("15");
-                      else if (value.includes("20%")) setSavingPreset("20");
-                      else if (value.includes("Custom"))
-                        setSavingPreset("custom");
-                      else setSavingPreset("");
-                    }}
-                    placeholder="Select savings rate..."
-                  />
-
-                  {savingPreset === "custom" && (
-                    <div style={{ marginTop: "1rem" }}>
-                      <SearchableSelector
-                        options={[
-                          "5%",
-                          "8%",
-                          "10%",
-                          "12%",
-                          "15%",
-                          "18%",
-                          "20%",
-                          "25%",
-                          "30%",
-                        ]}
-                        value={customSave}
-                        onChange={setCustomSave}
-                        placeholder="Type or select savings rate (e.g., 14)..."
-                        allowCustom={true}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Mortgage Rate</label>
-                  <SearchableSelector
-                    options={[
-                      "8% (Current Average)",
-                      "12% (Higher Rate)",
-                      "18% (Stress Test)",
-                    ]}
-                    value={
-                      rate === "8"
-                        ? "8% (Current Average)"
-                        : rate === "12"
-                        ? "12% (Higher Rate)"
-                        : rate === "18"
-                        ? "18% (Stress Test)"
-                        : ""
-                    }
-                    onChange={(value) => {
-                      if (value.includes("8%")) setRate("8");
-                      else if (value.includes("12%")) setRate("12");
-                      else if (value.includes("18%")) setRate("18");
-                      else setRate("");
-                    }}
-                    placeholder="Select mortgage rate..."
-                  />
-                </div>
-              </div>
-
-              {/* Results Section */}
-              {hasValidData && (
-                <div className="result">
-                  <h3>Affordability Analysis</h3>
-                  <div className="metrics-grid">
-                    <div className={`metric ${saveTimeStatus.status}`}>
-                      <div className="metric-label">
-                        Time to Save Down Payment
-                      </div>
-                      <div className="metric-value">
-                        {monthsToSave.toFixed(1)} months
-                      </div>
-                      <div className="metric-benchmark">
-                        {saveTimeStatus.benchmark}
-                      </div>
-                      <div
-                        className={`metric-status status-${saveTimeStatus.status}`}
-                      >
-                        {saveTimeStatus.status}
-                      </div>
-                    </div>
-
-                    <div className={`metric ${paymentRatioStatus.status}`}>
-                      <div className="metric-label">
-                        Payment to Income Ratio
-                      </div>
-                      <div className="metric-value">
-                        {paymentShare.toFixed(1)}%
-                      </div>
-                      <div className="metric-benchmark">
-                        {paymentRatioStatus.benchmark}
-                      </div>
-                      <div
-                        className={`metric-status status-${paymentRatioStatus.status}`}
-                      >
-                        {paymentRatioStatus.status}
-                      </div>
-                    </div>
-
-                    <div className={`metric ${coverageStatus.status}`}>
-                      <div className="metric-label">Income Coverage</div>
-                      <div className="metric-value">{coverage.toFixed(1)}%</div>
-                      <div className="metric-benchmark">
-                        {coverageStatus.benchmark}
-                      </div>
-                      <div
-                        className={`metric-status status-${coverageStatus.status}`}
-                      >
-                        {coverageStatus.status}
-                      </div>
-                    </div>
-
-                    <div className={`score ${scoreStatus.status}`}>
-                      <div className="score-value">{score}</div>
-                      <div className="score-label">Affordability Score</div>
-                      <div
-                        className="metric-benchmark"
-                        style={{ marginTop: "0.5rem", fontSize: "1rem" }}
-                      >
-                        {scoreStatus.benchmark}
-                      </div>
-                      <div
-                        className={`metric-status status-${scoreStatus.status}`}
-                        style={{ marginTop: "0.5rem" }}
-                      >
-                        {scoreStatus.status}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {recommendations.length > 0 && (
-                <div className="recommendations">
-                  <h4>
-                    <span>💡</span>
-                    Personalized Recommendations
-                  </h4>
-                  {recommendations.map((rec, index) => (
-                    <div
-                      key={index}
-                      className={`recommendation-item priority-${rec.priority}`}
-                    >
-                      <div className="recommendation-title">{rec.title}</div>
-                      <div className="recommendation-desc">{rec.desc}</div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Advanced Features - Hidden on mobile by default */}
-              <div
-                className={`advanced-features ${showAdvanced ? "show" : ""}`}
-              >
-                {hasValidData &&
-                  (citySuggestions.betterOptions.length > 0 ||
-                    citySuggestions.alternatives.length > 0) && (
-                    <div className="suggestions-section">
-                      <h4 className="suggestions-title">
-                        <span>🎯</span>
-                        Alternative Cities
-                      </h4>
-
-                      {citySuggestions.betterOptions.length > 0 && (
-                        <div className="suggestion-category">
-                          <h5>🚀 Better Affordability Options</h5>
-                          <div className="suggestion-grid">
-                            {citySuggestions.betterOptions.map((city) => (
-                              <div
-                                key={city.cityName}
-                                className="suggestion-card better"
-                                onClick={() => setCity(city.cityName)}
-                              >
-                                <div className="suggestion-name">
-                                  {city.cityName}
-                                </div>
-                                <div className="suggestion-metrics">
-                                  <div>
-                                    Score: {city.score}/100 (+{city.scoreDiff})
-                                  </div>
-                                  <div>
-                                    Price: ${city.price.toLocaleString()}
-                                  </div>
-                                  <div>
-                                    Save time: {city.monthsToSave.toFixed(1)}{" "}
-                                    months
-                                  </div>
-                                </div>
-                                <div className="suggestion-highlight">
-                                  +{city.scoreDiff} Better
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {citySuggestions.alternatives.length > 0 && (
-                        <div className="suggestion-category">
-                          <h5>🏡 Quick-Save Alternatives</h5>
-                          <div className="suggestion-grid">
-                            {citySuggestions.alternatives.map((city) => (
-                              <div
-                                key={city.cityName}
-                                className="suggestion-card"
-                                onClick={() => setCity(city.cityName)}
-                              >
-                                <div className="suggestion-name">
-                                  {city.cityName}
-                                </div>
-                                <div className="suggestion-metrics">
-                                  <div>Score: {city.score}/100</div>
-                                  <div>
-                                    Price: ${city.price.toLocaleString()}
-                                  </div>
-                                  <div>
-                                    Save time: {city.monthsToSave.toFixed(1)}{" "}
-                                    months
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {citySuggestions.affordableOptions.length > 0 && (
-                        <div className="suggestion-category">
-                          <h5>💰 Payment-Safe Options</h5>
-                          <div className="suggestion-grid">
-                            {citySuggestions.affordableOptions.map((city) => (
-                              <div
-                                key={city.cityName}
-                                className="suggestion-card affordable"
-                                onClick={() => setCity(city.cityName)}
-                              >
-                                <div className="suggestion-name">
-                                  {city.cityName}
-                                </div>
-                                <div className="suggestion-metrics">
-                                  <div>Score: {city.score}/100</div>
-                                  <div>
-                                    Payment ratio:{" "}
-                                    {city.paymentShare.toFixed(1)}%
-                                  </div>
-                                  <div>
-                                    Price: ${city.price.toLocaleString()}
-                                  </div>
-                                </div>
-                                <div className="suggestion-highlight">
-                                  Safe Ratio
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                {hasValidData && (
-                  <div className="comparison-section">
-                    <div className="comparison-header">
-                      <h4 className="comparison-title">
-                        <span>📋</span>
-                        City Comparison
-                      </h4>
-                      <button
-                        className="add-city-btn"
-                        onClick={addToComparison}
-                        disabled={
-                          !city ||
-                          comparisonCities.length >= 3 ||
-                          comparisonCities.some((c) => c.cityName === city)
-                        }
-                      >
-                        {comparisonCities.some((c) => c.cityName === city)
-                          ? "Already Added"
-                          : `Add ${city || "City"} to Compare`}
-                      </button>
-                    </div>
-
-                    {comparisonCities.length > 0 && (
-                      <div>
-                        <div className="comparison-cities">
-                          {comparisonCities.map((cityMetrics, index) => (
-                            <div
-                              key={cityMetrics.cityName}
-                              className={`comparison-city ${
-                                cityMetrics.cityName === city ? "current" : ""
-                              }`}
-                            >
-                              <div className="city-header">
-                                <div className="city-name">
-                                  {cityMetrics.cityName}
-                                </div>
-                                <button
-                                  className="remove-city"
-                                  onClick={() =>
-                                    removeFromComparison(cityMetrics.cityName)
-                                  }
-                                  title="Remove from comparison"
-                                >
-                                  ×
-                                </button>
-                              </div>
-                              <div className="city-metrics">
-                                <div className="city-metric">
-                                  <span className="city-metric-label">
-                                    Price
-                                  </span>
-                                  <span className="city-metric-value">
-                                    ${cityMetrics.price.toLocaleString()}
-                                  </span>
-                                </div>
-                                <div className="city-metric">
-                                  <span className="city-metric-label">
-                                    Save Time
-                                  </span>
-                                  <span
-                                    className={`city-metric-value ${cityMetrics.saveTimeStatus.status}`}
-                                  >
-                                    {cityMetrics.monthsToSave.toFixed(1)}mo
-                                  </span>
-                                </div>
-                                <div className="city-metric">
-                                  <span className="city-metric-label">
-                                    Payment Ratio
-                                  </span>
-                                  <span
-                                    className={`city-metric-value ${cityMetrics.paymentRatioStatus.status}`}
-                                  >
-                                    {cityMetrics.paymentShare.toFixed(1)}%
-                                  </span>
-                                </div>
-                                <div className="city-metric">
-                                  <span className="city-metric-label">
-                                    Coverage
-                                  </span>
-                                  <span
-                                    className={`city-metric-value ${cityMetrics.coverageStatus.status}`}
-                                  >
-                                    {cityMetrics.coverage.toFixed(0)}%
-                                  </span>
-                                </div>
-                                <div className="city-metric">
-                                  <span className="city-metric-label">
-                                    Affordability
-                                  </span>
-                                  <span
-                                    className={`city-metric-value ${cityMetrics.scoreStatus.status}`}
-                                  >
-                                    {cityMetrics.score}/100
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        {comparisonCities.length > 1 && (
-                          <table className="comparison-table">
-                            <thead>
-                              <tr>
-                                <th>Metric</th>
-                                {comparisonCities.map((city) => (
-                                  <th key={city.cityName}>{city.cityName}</th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <strong>Housing Price</strong>
-                                </td>
-                                {comparisonCities.map((city) => (
-                                  <td key={city.cityName}>
-                                    ${city.price.toLocaleString()}
-                                  </td>
-                                ))}
-                              </tr>
-                              <tr>
-                                <td>
-                                  <strong>Time to Save</strong>
-                                </td>
-                                {comparisonCities.map((city) => (
-                                  <td
-                                    key={city.cityName}
-                                    className={city.saveTimeStatus.status}
-                                  >
-                                    {city.monthsToSave.toFixed(1)} months
-                                  </td>
-                                ))}
-                              </tr>
-                              <tr>
-                                <td>
-                                  <strong>Payment Ratio</strong>
-                                </td>
-                                {comparisonCities.map((city) => (
-                                  <td
-                                    key={city.cityName}
-                                    className={city.paymentRatioStatus.status}
-                                  >
-                                    {city.paymentShare.toFixed(1)}%
-                                  </td>
-                                ))}
-                              </tr>
-                              <tr>
-                                <td>
-                                  <strong>Affordability Score</strong>
-                                </td>
-                                {comparisonCities.map((city) => (
-                                  <td
-                                    key={city.cityName}
-                                    className={city.scoreStatus.status}
-                                  >
-                                    <strong>{city.score}/100</strong>
-                                  </td>
-                                ))}
-                              </tr>
-                            </tbody>
-                          </table>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {hasValidData && (
-                  <div className="scenario-section">
-                    <h4 className="scenario-title">
-                      <span>🎯</span>
-                      What-If Scenario Analysis
-                    </h4>
-
-                    <div className="scenario-controls">
-                      <div className="scenario-control">
-                        <div className="scenario-label">
-                          Annual Income
-                          <span className="scenario-current">
-                            Current: ${currentIncome.toLocaleString()}
-                          </span>
-                        </div>
-                        <input
-                          type="range"
-                          className="scenario-slider"
-                          min={Math.max(30000, currentIncome * 0.7)}
-                          max={currentIncome * 1.5}
-                          step={5000}
-                          value={modelIncome}
-                          onChange={(e) =>
-                            setScenarioIncome(parseFloat(e.target.value))
-                          }
-                        />
-                        <div className="scenario-values">
-                          <span>
-                            $
-                            {Math.max(
-                              30000,
-                              currentIncome * 0.7
-                            ).toLocaleString()}
-                          </span>
-                          <span className="current-value">
-                            ${modelIncome.toLocaleString()}
-                          </span>
-                          <span>${(currentIncome * 1.5).toLocaleString()}</span>
-                        </div>
-                      </div>
-
-                      <div className="scenario-control">
-                        <div className="scenario-label">
-                          Savings Rate
-                          <span className="scenario-current">
-                            Current: {currentSavings}%
-                          </span>
-                        </div>
-                        <input
-                          type="range"
-                          className="scenario-slider"
-                          min={5}
-                          max={30}
-                          step={1}
-                          value={modelSavings}
-                          onChange={(e) =>
-                            setScenarioSavings(parseFloat(e.target.value))
-                          }
-                        />
-                        <div className="scenario-values">
-                          <span>5%</span>
-                          <span className="current-value">{modelSavings}%</span>
-                          <span>30%</span>
-                        </div>
-                      </div>
-
-                      <div className="scenario-control">
-                        <div className="scenario-label">
-                          Mortgage Rate
-                          <span className="scenario-current">
-                            Current: {currentRate}%
-                          </span>
-                        </div>
-                        <input
-                          type="range"
-                          className="scenario-slider"
-                          min={4}
-                          max={20}
-                          step={0.5}
-                          value={modelRate}
-                          onChange={(e) =>
-                            setScenarioRate(parseFloat(e.target.value))
-                          }
-                        />
-                        <div className="scenario-values">
-                          <span>4%</span>
-                          <span className="current-value">{modelRate}%</span>
-                          <span>20%</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {scenarioMetrics && (
-                      <div className="scenario-impact">
-                        <div className="impact-grid">
-                          <div className="impact-item">
-                            <div className="impact-label">Save Time</div>
-                            <div className="impact-value">
-                              {scenarioMetrics.monthsToSave.toFixed(1)} months
-                            </div>
-                            {scenarioMetrics.changes.monthsToSave !== 0 && (
-                              <div
-                                className={`impact-change ${
-                                  scenarioMetrics.changes.monthsToSave < 0
-                                    ? "positive"
-                                    : "negative"
-                                }`}
-                              >
-                                {scenarioMetrics.changes.monthsToSave > 0
-                                  ? "+"
-                                  : ""}
-                                {scenarioMetrics.changes.monthsToSave.toFixed(
-                                  1
-                                )}{" "}
-                                months
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="impact-item">
-                            <div className="impact-label">Payment Ratio</div>
-                            <div className="impact-value">
-                              {scenarioMetrics.paymentShare.toFixed(1)}%
-                            </div>
-                            {scenarioMetrics.changes.paymentShare !== 0 && (
-                              <div
-                                className={`impact-change ${
-                                  scenarioMetrics.changes.paymentShare < 0
-                                    ? "positive"
-                                    : "negative"
-                                }`}
-                              >
-                                {scenarioMetrics.changes.paymentShare > 0
-                                  ? "+"
-                                  : ""}
-                                {scenarioMetrics.changes.paymentShare.toFixed(
-                                  1
-                                )}
-                                %
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="impact-item">
-                            <div className="impact-label">Income Coverage</div>
-                            <div className="impact-value">
-                              {scenarioMetrics.coverage.toFixed(0)}%
-                            </div>
-                            {scenarioMetrics.changes.coverage !== 0 && (
-                              <div
-                                className={`impact-change ${
-                                  scenarioMetrics.changes.coverage > 0
-                                    ? "positive"
-                                    : "negative"
-                                }`}
-                              >
-                                {scenarioMetrics.changes.coverage > 0
-                                  ? "+"
-                                  : ""}
-                                {scenarioMetrics.changes.coverage.toFixed(0)}%
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="impact-item">
-                            <div className="impact-label">
-                              Affordability Score
-                            </div>
-                            <div className="impact-value">
-                              {scenarioMetrics.score}/100
-                            </div>
-                            {scenarioMetrics.changes.score !== 0 && (
-                              <div
-                                className={`impact-change ${
-                                  scenarioMetrics.changes.score > 0
-                                    ? "positive"
-                                    : "negative"
-                                }`}
-                              >
-                                {scenarioMetrics.changes.score > 0 ? "+" : ""}
-                                {scenarioMetrics.changes.score.toFixed(0)}{" "}
-                                points
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Mobile Advanced Toggle */}
-              {isMobile && hasValidData && (
-                <div className="advanced-toggle">
-                  <button onClick={() => setShowAdvanced(!showAdvanced)}>
-                    {showAdvanced ? "Hide" : "Show"} Advanced Features
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      }
-
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
-    </script>
-  </body>
+        </div>
+      );
+    }
+
+    // Initialize application
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
 </html>

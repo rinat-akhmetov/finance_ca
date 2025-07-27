@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Canada Housing Affordability — beta</title>
+  <!-- React CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    
+    .header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+    
+    .content {
+      padding: 3rem 2rem;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .form-group {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+    }
+    
+    select, input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .nested-select {
+      margin-top: 1rem;
+      padding: 10px 14px;
+      background: #fff;
+      border: 2px solid #dee2e6;
+    }
+    
+    .result {
+      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      color: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(116, 185, 255, 0.3);
+      margin-top: 2rem;
+    }
+    
+    .result h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .metric {
+      background: rgba(255,255,255,0.15);
+      padding: 1.5rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .metric-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    .score {
+      text-align: center;
+      grid-column: 1 / -1;
+      background: rgba(255,255,255,0.2);
+      padding: 2rem;
+      border-radius: 16px;
+      margin-top: 1rem;
+    }
+    
+    .score-value {
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .score-label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .header {
+        padding: 2rem 1rem;
+      }
+      
+      .header h2 {
+        font-size: 2rem;
+      }
+      
+      .content {
+        padding: 2rem 1rem;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .score-value {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+<script type="text/babel">
+
+/* ----------  ДАННЫЕ (Q1‑2025)  ---------- */
+const cityData = {
+  "Toronto": {
+    price: 1184646,                     // Teranet–NBC HPI Q1‑25 :contentReference[oaicite:1]{index=1}
+    medianIncome: 98063,                // StatCan via NBC табл. (Q1‑25) :contentReference[oaicite:2]{index=2}
+    averageIncome: 105000,
+    utilities: 327.83,                  // Numbeo Jul‑25 :contentReference[oaicite:3]{index=3}
+    propertyTaxRate: 0.00715289,        // 0 .715289 % 2024 Residential :contentReference[oaicite:4]{index=4}
+    maintenanceRate: 0.01,
+    subsistence: 4600                   // MBM Toronto ≈ $55 000 / 12:contentReference[oaicite:5]{index=5}
+  },
+  "Vancouver": {
+    price: 1299416,                     // :contentReference[oaicite:6]{index=6}
+    medianIncome: 90061,                // :contentReference[oaicite:7]{index=7}
+    averageIncome: 98000,
+    utilities: 312.31,                  // Numbeo Jul‑25 :contentReference[oaicite:8]{index=8}
+    propertyTaxRate: 0.00311827,        // 3.11827 ‰ = 0.3118 % 2025 total :contentReference[oaicite:9]{index=9}
+    maintenanceRate: 0.01,
+    subsistence: 5000                   // Living‑wage basket $27.05 × 2 работника :contentReference[oaicite:10]{index=10}
+  },
+  "Edmonton": {
+    price: 472103,                      // :contentReference[oaicite:11]{index=11}
+    medianIncome: 101921,               // :contentReference[oaicite:12]{index=12}
+    averageIncome: 104000,
+    utilities: 442.39,                  // Numbeo Jul‑25 :contentReference[oaicite:13]{index=13}
+    propertyTaxRate: 0.0101391,         // 1.01391 % 2025 Residential :contentReference[oaicite:14]{index=14}
+    maintenanceRate: 0.01,
+    subsistence: 4200                   // Living wage $20.85 / h Edmonton :contentReference[oaicite:15]{index=15}
+  }
+};
+
+/* Доп. выбор «по профессии» — покажу три примера  */
+const professions = {
+  "Software Engineer": 115000,
+  "Registered Nurse": 82000,
+  "Teacher": 75000
+};
+
+/* ----------  ПОЛЕЗНЫЕ ФУНКЦИИ  ---------- */
+function mortgagePayment(P, annualRate, years){
+  const r = annualRate/100/12;
+  const n = years*12;
+  return P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+}
+
+/* ----------  UI‑ПРИЛОЖЕНИЕ  ---------- */
+function App(){
+  const cities = Object.keys(cityData);
+  const [city,setCity]=React.useState(cities[0]);
+  const [incomeMode,setIncomeMode]=React.useState("median");
+  const [customIncome,setCustomIncome]=React.useState("");
+  const [profession,setProfession]=React.useState(Object.keys(professions)[0]);
+  const [savingPreset,setSavingPreset]=React.useState("10");
+  const [customSave,setCustomSave]=React.useState("");
+  const [rate,setRate]=React.useState(8);
+  const [term,setTerm]=React.useState(25);
+
+  /* ----------  Расчёты  ---------- */
+  const c = cityData[city];
+  const grossIncome =
+    incomeMode==="median"      ? c.medianIncome :
+    incomeMode==="average"     ? c.averageIncome :
+    incomeMode==="profession"  ? professions[profession] :
+    parseFloat(customIncome)||0;
+
+  const savePct = savingPreset==="custom" ? parseFloat(customSave)||0 : parseFloat(savingPreset);
+  const dpFrac = 0.10;                                     // минимальный CMHC
+  const downPayment = c.price * dpFrac;
+  const monthlySaving = grossIncome * savePct / 100 / 12;
+  const monthsToSave = downPayment / monthlySaving || 0;
+
+  const loan = c.price - downPayment;
+  const principalAndInterest = mortgagePayment(loan, rate, term);
+  const tax   = c.price*c.propertyTaxRate/12;
+  const maint = c.price*c.maintenanceRate/12;
+  const totalHousing = principalAndInterest + c.utilities + tax + maint;
+
+  const netIncome = grossIncome*0.75/12;                   // грубое after‑tax ≈ ‑25 %
+  const RI = netIncome - totalHousing;
+
+  let score;
+  if (RI >= 1.5*c.subsistence)      score = 100;
+  else if (RI >= c.subsistence)     score = Math.round(100 * (RI - c.subsistence) / (0.5 * c.subsistence));
+  else                              score = 0;
+
+  const paymentShare = principalAndInterest / (grossIncome/12) * 100;
+  const coverage = netIncome / totalHousing * 100;
+
+  /* ----------  UI  ---------- */
+  return (
+    <div className="container">
+      <div className="header">
+        <h2>Canadian Housing Affordability Tool</h2>
+        <p>Analyze housing costs and affordability across major Canadian cities</p>
+      </div>
+
+      <div className="content">
+        <div className="form-grid">
+          <div className="form-group">
+            <label>City</label>
+            <select value={city} onChange={e=>setCity(e.target.value)}>
+              {cities.map(cty=><option key={cty}>{cty}</option>)}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Income Source</label>
+            <select value={incomeMode} onChange={e=>setIncomeMode(e.target.value)}>
+              <option value="median">Median Household</option>
+              <option value="average">Average Household</option>
+              <option value="profession">By Profession</option>
+              <option value="custom">Custom Amount</option>
+            </select>
+            
+            {incomeMode==="profession" && (
+              <select className="nested-select" value={profession} onChange={e=>setProfession(e.target.value)}>
+                {Object.keys(professions).map(p=><option key={p}>{p}</option>)}
+              </select>
+            )}
+
+            {incomeMode==="custom" && (
+              <input className="nested-select" type="number" value={customIncome}
+                     placeholder="Annual income (CAD)"
+                     onChange={e=>setCustomIncome(e.target.value)}/>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Savings Rate</label>
+            <select value={savingPreset} onChange={e=>setSavingPreset(e.target.value)}>
+              <option value="10">Average Canada (10%)</option>
+              <option value="12">Average {city} (12%)</option>
+              <option value="15">Aggressive Saver (15%)</option>
+              <option value="20">Super Saver (20%)</option>
+              <option value="custom">Custom Rate</option>
+            </select>
+            
+            {savingPreset==="custom" && (
+              <input className="nested-select" type="number" value={customSave}
+                     placeholder="Savings rate (%)"
+                     onChange={e=>setCustomSave(e.target.value)}/>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Mortgage Rate</label>
+            <select value={rate} onChange={e=>setRate(parseFloat(e.target.value))}>
+              <option value="8">8% (Current Average)</option>
+              <option value="12">12% (Higher Rate)</option>
+              <option value="18">18% (Stress Test)</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="result">
+          <h3>Affordability Analysis</h3>
+          <div className="metrics-grid">
+            <div className="metric">
+              <div className="metric-label">Time to Save Down Payment</div>
+              <div className="metric-value">{monthsToSave.toFixed(1)} months</div>
+            </div>
+            
+            <div className="metric">
+              <div className="metric-label">Payment to Income Ratio</div>
+              <div className="metric-value">{paymentShare.toFixed(1)}%</div>
+            </div>
+            
+            <div className="metric">
+              <div className="metric-label">Income Coverage</div>
+              <div className="metric-value">{coverage.toFixed(1)}%</div>
+            </div>
+            
+            <div className="score">
+              <div className="score-value">{score}</div>
+              <div className="score-label">Affordability Score</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App/>);
+</script>
+</body>
+</html>

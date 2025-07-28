@@ -55,6 +55,7 @@
         const [isMobile, setIsMobile] = React.useState(false);
         const [currentStep, setCurrentStep] = React.useState(1);
         const [showAdvanced, setShowAdvanced] = React.useState(false);
+        const [showCalculation, setShowCalculation] = React.useState(false);
 
         // Mobile detection
         React.useEffect(() => {
@@ -442,17 +443,105 @@
 
               {hasValidData && (
                 <div className="result">
-                  <h3>Affordability Analysis</h3>
+                  <h3>Your Affordability Analysis</h3>
+                  <div className="affordability-explanation">
+                    <p>Your score of <strong>{score}/100</strong> shows how well you can maintain quality of life after housing costs. Here's what each metric means:</p>
+                    <button 
+                      className="calculation-toggle"
+                      onClick={() => setShowCalculation(!showCalculation)}
+                    >
+                      {showCalculation ? "Hide" : "Show"} How This Score Was Calculated
+                    </button>
+                  </div>
+                  
+                  {showCalculation && (
+                    <div className="calculation-explanation">
+                      <h4>📊 Score Calculation Breakdown</h4>
+                      <div className="calculation-steps">
+                        <div className="calc-step">
+                          <div className="calc-step-title">1. Monthly Income After Taxes</div>
+                          <div className="calc-formula">
+                            Gross Income: ${grossIncome.toLocaleString()} ÷ 12 × 0.75 = <strong>${(grossIncome * 0.75 / 12).toLocaleString()}/month</strong>
+                          </div>
+                          <div className="calc-note">We estimate 75% of gross income remains after federal/provincial taxes</div>
+                        </div>
+                        
+                        <div className="calc-step">
+                          <div className="calc-step-title">2. Total Monthly Housing Costs</div>
+                          <div className="calc-breakdown">
+                            <div>• Mortgage Payment (P&I): ${principalAndInterest.toLocaleString()}</div>
+                            <div>• Property Taxes: ${tax.toLocaleString()}</div>
+                            <div>• Utilities: ${utilities.toLocaleString()}</div>
+                            <div>• Maintenance (1%/year): ${maint.toLocaleString()}</div>
+                          </div>
+                          <div className="calc-formula">
+                            Total Housing: <strong>${totalHousing.toLocaleString()}/month</strong>
+                          </div>
+                        </div>
+                        
+                        <div className="calc-step">
+                          <div className="calc-step-title">3. Residual Income</div>
+                          <div className="calc-formula">
+                            ${(grossIncome * 0.75 / 12).toLocaleString()} - ${totalHousing.toLocaleString()} = <strong>${RI.toLocaleString()}/month</strong>
+                          </div>
+                          <div className="calc-note">Money left over for food, transportation, savings, and discretionary spending</div>
+                        </div>
+                        
+                        <div className="calc-step">
+                          <div className="calc-step-title">4. Affordability Score Formula</div>
+                          <div className="calc-formula">
+                            Subsistence Level: <strong>${c && c.subsistence ? c.subsistence.toLocaleString() : '0'}/month</strong>
+                          </div>
+                          <div className="calc-note">Basic cost of living in {city} (food, transport, clothing, etc.)</div>
+                          <div className="calc-scoring">
+                            <div className="score-range">
+                              <strong>Score Calculation:</strong>
+                              <div>• If Residual ≥ 1.5× Subsistence: Score = 100</div>
+                              <div>• If Residual ≥ Subsistence: Score = 0-99 (linear scale)</div>
+                              <div>• If Residual &lt; Subsistence: Score = 0</div>
+                            </div>
+                            <div className="your-calculation">
+                              <div><strong>Your Calculation:</strong></div>
+                              <div>Residual: ${RI.toLocaleString()} vs Subsistence: ${c && c.subsistence ? c.subsistence.toLocaleString() : '0'}</div>
+                              {RI >= 1.5 * (c && c.subsistence ? c.subsistence : 0) ? 
+                                <div>✅ ${RI.toLocaleString()} ≥ ${(1.5 * (c && c.subsistence ? c.subsistence : 0)).toLocaleString()} → Score = 100</div> :
+                                RI >= (c && c.subsistence ? c.subsistence : 0) ? 
+                                <div>📊 Linear scale: ({RI.toLocaleString()} - ${c && c.subsistence ? c.subsistence.toLocaleString() : '0'}) ÷ ${(0.5 * (c && c.subsistence ? c.subsistence : 0)).toLocaleString()} × 100 = {score}</div> :
+                                <div>❌ ${RI.toLocaleString()} &lt; ${c && c.subsistence ? c.subsistence.toLocaleString() : '0'} → Score = 0</div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="calc-step methodology">
+                          <div className="calc-step-title">📚 Methodology Notes</div>
+                          <div className="methodology-notes">
+                            <div>• <strong>Tax Rate:</strong> Simplified 25% effective rate (varies by province/income)</div>
+                            <div>• <strong>Mortgage:</strong> Standard amortization formula with compound interest</div>
+                            <div>• <strong>Subsistence:</strong> Based on living wage calculations and Statistics Canada data</div>
+                            <div>• <strong>Property Tax:</strong> Municipal rates from official city assessments</div>
+                            <div>• <strong>Maintenance:</strong> Industry standard 1% of home value annually</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <div className="metrics-grid">
                     <div className={`metric ${saveTimeStatus.status}`}>
                       <div className="metric-label">
                         Time to Save Down Payment
+                        <span className="metric-help" title="How long to save 10% down payment at your current savings rate">ⓘ</span>
                       </div>
                       <div className="metric-value">
                         {monthsToSave.toFixed(1)} months
                       </div>
                       <div className="metric-benchmark">
                         {saveTimeStatus.benchmark}
+                      </div>
+                      <div className="metric-comparison">
+                        {monthsToSave <= 12 ? "✅ Faster than most Canadians" : 
+                         monthsToSave <= 24 ? "⚠️ Average timeline for your income level" : 
+                         "⏰ Consider increasing savings rate"}
                       </div>
                       <div
                         className={`metric-status status-${saveTimeStatus.status}`}
@@ -464,12 +553,19 @@
                     <div className={`metric ${paymentRatioStatus.status}`}>
                       <div className="metric-label">
                         Payment to Income Ratio
+                        <span className="metric-help" title="Mortgage payment as % of gross income. Banks use 32% max, stress test at 39%">ⓘ</span>
                       </div>
                       <div className="metric-value">
                         {paymentShare.toFixed(1)}%
                       </div>
                       <div className="metric-benchmark">
                         {paymentRatioStatus.benchmark}
+                      </div>
+                      <div className="metric-comparison">
+                        {paymentShare <= 25 ? "🎯 Bank's preferred range" : 
+                         paymentShare <= 32 ? "✅ Within lending guidelines" : 
+                         paymentShare <= 39 ? "⚠️ At stress test threshold" : 
+                         "❌ Exceeds lending standards"}
                       </div>
                       <div
                         className={`metric-status status-${paymentRatioStatus.status}`}
@@ -479,10 +575,19 @@
                     </div>
 
                     <div className={`metric ${coverageStatus.status}`}>
-                      <div className="metric-label">Income Coverage</div>
+                      <div className="metric-label">
+                        Income Coverage
+                        <span className="metric-help" title="How much your net income exceeds total housing costs">ⓘ</span>
+                      </div>
                       <div className="metric-value">{coverage.toFixed(1)}%</div>
                       <div className="metric-benchmark">
                         {coverageStatus.benchmark}
+                      </div>
+                      <div className="metric-comparison">
+                        {coverage >= 150 ? "💰 Excellent financial cushion" : 
+                         coverage >= 120 ? "✅ Healthy income buffer" : 
+                         coverage >= 100 ? "⚠️ Tight but manageable" : 
+                         "❌ Income insufficient for housing costs"}
                       </div>
                       <div
                         className={`metric-status status-${coverageStatus.status}`}
@@ -493,12 +598,21 @@
 
                     <div className={`score ${scoreStatus.status}`}>
                       <div className="score-value">{score}</div>
-                      <div className="score-label">Affordability Score</div>
+                      <div className="score-label">
+                        Affordability Score
+                        <span className="metric-help" title="Based on residual income after housing costs vs. basic living needs">ⓘ</span>
+                      </div>
                       <div
                         className="metric-benchmark"
                         style={{ marginTop: "0.5rem", fontSize: "1rem" }}
                       >
                         {scoreStatus.benchmark}
+                      </div>
+                      <div className="score-interpretation" style={{ marginTop: "0.5rem", fontSize: "0.9rem", opacity: "0.9" }}>
+                        {score >= 80 ? "🎉 You'll live comfortably with money for savings & fun" :
+                         score >= 60 ? "✅ You can afford it, but budget will be tighter" :
+                         score >= 40 ? "⚠️ Challenging - consider cheaper areas or higher income" :
+                         "❌ Not affordable - would struggle with basic needs"}
                       </div>
                       <div
                         className={`metric-status status-${scoreStatus.status}`}
@@ -508,6 +622,52 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              )}
+              
+              {hasValidData && score < 70 && (citySuggestions.betterOptions.length > 0 || citySuggestions.alternatives.length > 0) && (
+                <div className="alternative-cities">
+                  <h3>💡 Where You'd Have Better Affordability</h3>
+                  <p>Based on your income and savings, here are cities where you'd score higher:</p>
+                  
+                  {citySuggestions.betterOptions.length > 0 && (
+                    <div className="city-suggestions">
+                      <h4>🚀 Better Affordability Options</h4>
+                      <div className="suggestion-cards">
+                        {citySuggestions.betterOptions.slice(0, 3).map(suggestion => (
+                          <div key={suggestion.cityName} className="suggestion-card better" onClick={() => setCity(suggestion.cityName)}>
+                            <div className="suggestion-city">{suggestion.cityName}</div>
+                            <div className="suggestion-score">Score: {suggestion.score}/100</div>
+                            <div className="suggestion-improvement">+{suggestion.scoreDiff} points better</div>
+                            <div className="suggestion-details">
+                              <div>Price: ${suggestion.price.toLocaleString()}</div>
+                              <div>Save time: {suggestion.monthsToSave.toFixed(1)} months</div>
+                            </div>
+                            <div className="suggestion-action">👆 Click to explore</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {citySuggestions.alternatives.length > 0 && (
+                    <div className="city-suggestions">
+                      <h4>⚡ Quick-Save Alternatives</h4>
+                      <div className="suggestion-cards">
+                        {citySuggestions.alternatives.slice(0, 3).map(suggestion => (
+                          <div key={suggestion.cityName} className="suggestion-card alternative" onClick={() => setCity(suggestion.cityName)}>
+                            <div className="suggestion-city">{suggestion.cityName}</div>
+                            <div className="suggestion-score">Score: {suggestion.score}/100</div>
+                            <div className="suggestion-save-time">{suggestion.monthsToSave.toFixed(1)} months to save</div>
+                            <div className="suggestion-details">
+                              <div>Price: ${suggestion.price.toLocaleString()}</div>
+                            </div>
+                            <div className="suggestion-action">👆 Click to explore</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

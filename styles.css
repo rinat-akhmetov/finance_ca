@@ -1005,6 +1005,346 @@ input:focus {
   }
 }
 
+/* New UX Enhancement Styles */
+.affordability-explanation {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.affordability-explanation p {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.metric-help {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  margin-left: 0.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 16px;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.metric-help:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.metric-comparison {
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.score-interpretation {
+  text-align: center;
+  font-weight: 500;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  margin: 0.5rem 0;
+}
+
+/* Calculation Explanation */
+.calculation-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.calculation-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.calculation-explanation {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2c3e50;
+  padding: 2rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.calculation-explanation h4 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  text-align: center;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.calculation-steps {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.calc-step {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s ease;
+}
+
+.calc-step:hover {
+  background: #f0f4ff;
+  border-left-color: #5a67d8;
+  transform: translateX(2px);
+}
+
+.calc-step.methodology {
+  border-left-color: #10b981;
+  background: #f0fdf4;
+}
+
+.calc-step-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calc-formula {
+  background: white;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-size: 0.95rem;
+  border: 1px solid #e5e7eb;
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+
+.calc-breakdown {
+  background: white;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  margin: 0.5rem 0;
+}
+
+.calc-breakdown div {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.calc-note {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-style: italic;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 4px;
+  border-left: 3px solid #667eea;
+}
+
+.calc-scoring {
+  margin-top: 1rem;
+}
+
+.score-range {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 0.75rem;
+}
+
+.score-range div {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.your-calculation {
+  background: #fff7ed;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 2px solid #fb923c;
+}
+
+.your-calculation div {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.methodology-notes {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #d1fae5;
+}
+
+.methodology-notes div {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+/* Alternative Cities Section */
+.alternative-cities {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2c3e50;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-top: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.alternative-cities h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.alternative-cities p {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.city-suggestions {
+  margin-bottom: 2rem;
+}
+
+.city-suggestions h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.suggestion-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.suggestion-card {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.suggestion-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+  border-color: #667eea;
+}
+
+.suggestion-card.better {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+}
+
+.suggestion-card.alternative {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.suggestion-city {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.suggestion-score {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #059669;
+  margin-bottom: 0.5rem;
+}
+
+.suggestion-improvement {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.suggestion-save-time {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.suggestion-details {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.suggestion-action {
+  font-size: 0.8rem;
+  color: #667eea;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.5rem;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.suggestion-card:hover .suggestion-action {
+  opacity: 1;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   body {
@@ -1141,6 +1481,33 @@ input:focus {
 
   .advanced-features.show {
     display: block;
+  }
+  
+  .calculation-explanation {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .calculation-explanation h4 {
+    font-size: 1.1rem;
+  }
+  
+  .calc-step {
+    padding: 1rem;
+  }
+  
+  .calc-step-title {
+    font-size: 1rem;
+  }
+  
+  .calc-formula,
+  .calc-breakdown {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+  
+  .calc-note {
+    font-size: 0.8rem;
   }
 }
 

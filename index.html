@@ -625,7 +625,7 @@
                 </div>
               )}
               
-              {hasValidData && score < 70 && (citySuggestions.betterOptions.length > 0 || citySuggestions.alternatives.length > 0) && (
+              {hasValidData && score < 70 && (citySuggestions.betterOptions.length > 0 || citySuggestions.alternatives.length > 0 || citySuggestions.affordableOptions.length > 0) && (
                 <div className="alternative-cities">
                   <h3>💡 Where You'd Have Better Affordability</h3>
                   <p>Based on your income and savings, here are cities where you'd score higher:</p>
@@ -661,6 +661,26 @@
                             <div className="suggestion-save-time">{suggestion.monthsToSave.toFixed(1)} months to save</div>
                             <div className="suggestion-details">
                               <div>Price: ${suggestion.price.toLocaleString()}</div>
+                            </div>
+                            <div className="suggestion-action">👆 Click to explore</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {citySuggestions.affordableOptions.length > 0 && (
+                    <div className="city-suggestions">
+                      <h4>💰 Most Affordable Options</h4>
+                      <div className="suggestion-cards">
+                        {citySuggestions.affordableOptions.slice(0, 3).map(suggestion => (
+                          <div key={suggestion.cityName} className="suggestion-card affordable" onClick={() => setCity(suggestion.cityName)}>
+                            <div className="suggestion-city">{suggestion.cityName}</div>
+                            <div className="suggestion-score">Score: {suggestion.score}/100</div>
+                            <div className="suggestion-improvement">Payment ratio: {suggestion.paymentShare.toFixed(1)}%</div>
+                            <div className="suggestion-details">
+                              <div>Price: ${suggestion.price.toLocaleString()}</div>
+                              <div>Save time: {suggestion.monthsToSave.toFixed(1)} months</div>
                             </div>
                             <div className="suggestion-action">👆 Click to explore</div>
                           </div>

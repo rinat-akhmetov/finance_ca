@@ -112,6 +112,7 @@
 
         // Form state
         const [city, setCity] = React.useState("");
+        const [propertyType, setPropertyType] = React.useState("");
         const [incomeMode, setIncomeMode] = React.useState("");
         const [customIncome, setCustomIncome] = React.useState("");
         const [profession, setProfession] = React.useState("");
@@ -170,7 +171,12 @@
         // Core calculations
         const c = city ? cityData[city] : null;
         const hasValidData =
-          c && incomeMode && (savingPreset || customSave) && rate;
+          c && propertyType && incomeMode && (savingPreset || customSave) && rate;
+        
+        // Get property price based on selected type
+        const propertyPrice = hasValidData && c && c.prices && c.prices[propertyType] 
+          ? c.prices[propertyType] 
+          : (c && c.prices && c.prices["Average Property"] ? c.prices["Average Property"] : 0);
 
         const grossIncome = hasValidData
           ? incomeMode === "median"
@@ -189,19 +195,19 @@
           : 0;
 
         const dpFrac = 0.1;
-        const downPayment = hasValidData ? c.price * dpFrac : 0;
+        const downPayment = hasValidData ? propertyPrice * dpFrac : 0;
         const monthlySaving = (grossIncome * savePct) / 100 / 12;
         const monthsToSave =
           monthlySaving > 0 ? downPayment / monthlySaving : 0;
 
-        const loan = hasValidData ? c.price - downPayment : 0;
+        const loan = hasValidData ? propertyPrice - downPayment : 0;
         const rateNum = parseFloat(rate) || 0;
         const principalAndInterest =
           hasValidData && rateNum > 0
             ? mortgagePayment(loan, rateNum, term)
             : 0;
-        const tax = hasValidData ? (c.price * c.propertyTaxRate) / 12 : 0;
-        const maint = hasValidData ? (c.price * c.maintenanceRate) / 12 : 0;
+        const tax = hasValidData ? (propertyPrice * c.propertyTaxRate) / 12 : 0;
+        const maint = hasValidData ? (propertyPrice * c.maintenanceRate) / 12 : 0;
         const utilities = hasValidData ? c.utilities : 0;
         const totalHousing = principalAndInterest + utilities + tax + maint;
 
@@ -256,7 +262,8 @@
               term,
               city,
               score,
-              cityData
+              cityData,
+              propertyType
             )
           : { betterOptions: [], alternatives: [], affordableOptions: [] };
 
@@ -273,16 +280,16 @@
 
         let scenarioMetrics = null;
         if (hasValidData && c) {
-          const sDownPayment = c.price * 0.1;
+          const sDownPayment = propertyPrice * 0.1;
           const sMonthlySaving = (modelIncome * modelSavings) / 100 / 12;
           const sMonthsToSave =
             sMonthlySaving > 0 ? sDownPayment / sMonthlySaving : 0;
 
-          const sLoan = c.price - sDownPayment;
+          const sLoan = propertyPrice - sDownPayment;
           const sPrincipalAndInterest =
             modelRate > 0 ? mortgagePayment(sLoan, modelRate, term) : 0;
-          const sTax = (c.price * c.propertyTaxRate) / 12;
-          const sMaint = (c.price * c.maintenanceRate) / 12;
+          const sTax = (propertyPrice * c.propertyTaxRate) / 12;
+          const sMaint = (propertyPrice * c.maintenanceRate) / 12;
           const sTotalHousing =
             sPrincipalAndInterest + c.utilities + sTax + sMaint;
 
@@ -320,6 +327,11 @@
           };
         }
 
+        // Reset property type when city changes
+        React.useEffect(() => {
+          setPropertyType("");
+        }, [city]);
+
         // Reset scenario when inputs change
         React.useEffect(() => {
           setScenarioIncome(null);
@@ -327,6 +339,7 @@
           setScenarioRate(null);
         }, [
           city,
+          propertyType,
           incomeMode,
           customIncome,
           profession,
@@ -354,6 +367,24 @@
                     value={city}
                     onChange={setCity}
                     placeholder="Search or select a city..."
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Property Type</label>
+                  <SearchableSelector
+                    options={city && cityData[city] && cityData[city].prices ? Object.keys(cityData[city].prices).map(type => 
+                      `${type} ($${cityData[city].prices[type].toLocaleString()})`
+                    ) : city ? ["Loading property types..."] : ["Select a city first"]}
+                    value={propertyType && city && cityData[city] && cityData[city].prices && cityData[city].prices[propertyType] ? 
+                      `${propertyType} ($${cityData[city].prices[propertyType].toLocaleString()})` : ""
+                    }
+                    onChange={(value) => {
+                      if (value === "Select a city first" || value === "Loading property types...") return;
+                      const typeName = value.split(" ($")[0];
+                      setPropertyType(typeName);
+                    }}
+                    placeholder={city ? "Select property type..." : "Select a city first"}
                   />
                 </div>
 

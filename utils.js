@@ -128,7 +128,7 @@ window.HousingUtils.getRecommendations = function(monthsToSave, paymentShare, co
 }
 
 // Generate suggested alternative cities based on user profile
-window.HousingUtils.getSuggestedCities = function(grossIncome, savePct, rateNum, term, currentCity, currentScore, cityData) {
+window.HousingUtils.getSuggestedCities = function(grossIncome, savePct, rateNum, term, currentCity, currentScore, cityData, propertyType = "Average Property") {
   const allCities = Object.keys(cityData);
   const suggestions = [];
   
@@ -136,14 +136,19 @@ window.HousingUtils.getSuggestedCities = function(grossIncome, savePct, rateNum,
     if (cityName === currentCity) return;
     
     const cityInfo = cityData[cityName];
-    const downPayment = cityInfo.price * 0.10;
+    // Use selected property type or fall back to average
+    const propertyPrice = cityInfo.prices && cityInfo.prices[propertyType] 
+      ? cityInfo.prices[propertyType] 
+      : (cityInfo.prices && cityInfo.prices["Average Property"] ? cityInfo.prices["Average Property"] : cityInfo.price || 0);
+    
+    const downPayment = propertyPrice * 0.10;
     const monthlySaving = grossIncome * savePct / 100 / 12;
     const monthsToSave = monthlySaving > 0 ? downPayment / monthlySaving : 0;
     
-    const loan = cityInfo.price - downPayment;
+    const loan = propertyPrice - downPayment;
     const principalAndInterest = rateNum > 0 ? window.HousingUtils.mortgagePayment(loan, rateNum, term) : 0;
-    const tax = cityInfo.price * cityInfo.propertyTaxRate / 12;
-    const maint = cityInfo.price * cityInfo.maintenanceRate / 12;
+    const tax = propertyPrice * cityInfo.propertyTaxRate / 12;
+    const maint = propertyPrice * cityInfo.maintenanceRate / 12;
     const totalHousing = principalAndInterest + cityInfo.utilities + tax + maint;
     
     const netIncome = grossIncome * 0.75 / 12;
@@ -165,7 +170,7 @@ window.HousingUtils.getSuggestedCities = function(grossIncome, savePct, rateNum,
       scoreDiff,
       monthsToSave,
       paymentShare,
-      price: cityInfo.price,
+      price: propertyPrice,
       improvement: scoreDiff > 0
     });
   });
@@ -185,18 +190,23 @@ window.HousingUtils.getSuggestedCities = function(grossIncome, savePct, rateNum,
 }
 
 // Calculate comprehensive metrics for a city
-window.HousingUtils.calculateCityMetrics = function(cityName, grossIncome, savePct, rateNum, term, cityData) {
+window.HousingUtils.calculateCityMetrics = function(cityName, grossIncome, savePct, rateNum, term, cityData, propertyType = "Average Property") {
   const cityInfo = cityData[cityName];
   if (!cityInfo) return null;
   
-  const downPayment = cityInfo.price * 0.10;
+  // Use selected property type or fall back to average
+  const propertyPrice = cityInfo.prices && cityInfo.prices[propertyType] 
+    ? cityInfo.prices[propertyType] 
+    : (cityInfo.prices && cityInfo.prices["Average Property"] ? cityInfo.prices["Average Property"] : cityInfo.price || 0);
+  
+  const downPayment = propertyPrice * 0.10;
   const monthlySaving = grossIncome * savePct / 100 / 12;
   const monthsToSave = monthlySaving > 0 ? downPayment / monthlySaving : 0;
   
-  const loan = cityInfo.price - downPayment;
+  const loan = propertyPrice - downPayment;
   const principalAndInterest = rateNum > 0 ? window.HousingUtils.mortgagePayment(loan, rateNum, term) : 0;
-  const tax = cityInfo.price * cityInfo.propertyTaxRate / 12;
-  const maint = cityInfo.price * cityInfo.maintenanceRate / 12;
+  const tax = propertyPrice * cityInfo.propertyTaxRate / 12;
+  const maint = propertyPrice * cityInfo.maintenanceRate / 12;
   const totalHousing = principalAndInterest + cityInfo.utilities + tax + maint;
   
   const netIncome = grossIncome * 0.75 / 12;
@@ -214,7 +224,7 @@ window.HousingUtils.calculateCityMetrics = function(cityName, grossIncome, saveP
   
   return {
     cityName,
-    price: cityInfo.price,
+    price: propertyPrice,
     monthsToSave,
     paymentShare,
     coverage,

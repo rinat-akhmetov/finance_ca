@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://rinat-akhmetov.github.io/finance_ca/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

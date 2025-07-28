@@ -3,7 +3,7 @@
 // Initialize global utilities namespace
 window.HousingUtils = window.HousingUtils || {};
 
-// Mortgage payment calculation using standard amortization formula
+// Mortgage payment calculation
 window.HousingUtils.mortgagePayment = function(principal, annualRate, years) {
   const monthlyRate = annualRate / 100 / 12;
   const numberOfPayments = years * 12;
@@ -11,33 +11,13 @@ window.HousingUtils.mortgagePayment = function(principal, annualRate, years) {
          (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
 }
 
-// Metric benchmarking and status determination
-window.HousingUtils.getMetricStatus = function(metricType, value, city) {
+// Metric status determination
+window.HousingUtils.getMetricStatus = function(metricType, value) {
   const benchmarks = {
-    saveTime: {
-      excellent: 6,   // < 6 months
-      good: 12,       // 6-12 months
-      caution: 24,    // 12-24 months
-      // > 24 months = warning
-    },
-    paymentRatio: {
-      excellent: 25,  // < 25%
-      good: 32,       // 25-32% (Canadian guideline)
-      caution: 39,    // 32-39% (stress test zone)
-      // > 39% = warning
-    },
-    coverage: {
-      excellent: 150, // > 150%
-      good: 120,      // 120-150%
-      caution: 100,   // 100-120%
-      // < 100% = warning
-    },
-    affordabilityScore: {
-      excellent: 80,  // > 80
-      good: 60,       // 60-80
-      caution: 40,    // 40-60
-      // < 40 = warning
-    }
+    saveTime: { excellent: 6, good: 12, caution: 24 },
+    paymentRatio: { excellent: 25, good: 32, caution: 39 },
+    coverage: { excellent: 150, good: 120, caution: 100 },
+    affordabilityScore: { excellent: 80, good: 60, caution: 40 }
   };
   
   const b = benchmarks[metricType];
@@ -46,61 +26,25 @@ window.HousingUtils.getMetricStatus = function(metricType, value, city) {
   let status, benchmark;
   
   if (metricType === 'saveTime') {
-    if (value < b.excellent) {
-      status = 'excellent';
-      benchmark = 'Very fast saving timeline';
-    } else if (value < b.good) {
-      status = 'good';
-      benchmark = 'Reasonable timeline';
-    } else if (value < b.caution) {
-      status = 'caution';
-      benchmark = 'Long but manageable';
-    } else {
-      status = 'warning';
-      benchmark = 'Very long timeline';
-    }
+    if (value < b.excellent) { status = 'excellent'; benchmark = 'Very fast saving timeline'; }
+    else if (value < b.good) { status = 'good'; benchmark = 'Reasonable timeline'; }
+    else if (value < b.caution) { status = 'caution'; benchmark = 'Long but manageable'; }
+    else { status = 'warning'; benchmark = 'Very long timeline'; }
   } else if (metricType === 'paymentRatio') {
-    if (value < b.excellent) {
-      status = 'excellent';
-      benchmark = 'Well below recommended max';
-    } else if (value < b.good) {
-      status = 'good';
-      benchmark = 'Within Canadian guidelines';
-    } else if (value < b.caution) {
-      status = 'caution';
-      benchmark = 'Near stress test threshold';
-    } else {
-      status = 'warning';
-      benchmark = 'Above recommended maximum';
-    }
+    if (value < b.excellent) { status = 'excellent'; benchmark = 'Well below recommended max'; }
+    else if (value < b.good) { status = 'good'; benchmark = 'Within Canadian guidelines'; }
+    else if (value < b.caution) { status = 'caution'; benchmark = 'Near stress test threshold'; }
+    else { status = 'warning'; benchmark = 'Above recommended maximum'; }
   } else if (metricType === 'coverage') {
-    if (value > b.excellent) {
-      status = 'excellent';
-      benchmark = 'Strong income coverage';
-    } else if (value > b.good) {
-      status = 'good';
-      benchmark = 'Adequate coverage';
-    } else if (value > b.caution) {
-      status = 'caution';
-      benchmark = 'Minimal coverage';
-    } else {
-      status = 'warning';
-      benchmark = 'Insufficient income';
-    }
+    if (value > b.excellent) { status = 'excellent'; benchmark = 'Strong income coverage'; }
+    else if (value > b.good) { status = 'good'; benchmark = 'Adequate coverage'; }
+    else if (value > b.caution) { status = 'caution'; benchmark = 'Minimal coverage'; }
+    else { status = 'warning'; benchmark = 'Insufficient income'; }
   } else if (metricType === 'affordabilityScore') {
-    if (value > b.excellent) {
-      status = 'excellent';
-      benchmark = 'Highly affordable';
-    } else if (value > b.good) {
-      status = 'good';
-      benchmark = 'Moderately affordable';
-    } else if (value > b.caution) {
-      status = 'caution';
-      benchmark = 'Limited affordability';
-    } else {
-      status = 'warning';
-      benchmark = 'Poor affordability';
-    }
+    if (value > b.excellent) { status = 'excellent'; benchmark = 'Highly affordable'; }
+    else if (value > b.good) { status = 'good'; benchmark = 'Moderately affordable'; }
+    else if (value > b.caution) { status = 'caution'; benchmark = 'Limited affordability'; }
+    else { status = 'warning'; benchmark = 'Poor affordability'; }
   }
   
   return { status, benchmark };

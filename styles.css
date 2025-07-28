@@ -77,7 +77,7 @@ body {
 }
 
 .form-group:hover {
-  border-color: #667eea;
+  border-color: #2563eb;
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
 }
@@ -85,7 +85,7 @@ body {
 .form-group label {
   display: block;
   font-weight: 600;
-  color: #2c3e50;
+  color: #1f2937;
   margin-bottom: 0.75rem;
   font-size: 1.1rem;
 }
@@ -104,7 +104,7 @@ input {
 select:focus,
 input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -118,7 +118,7 @@ input:focus {
 /* Results Section */
 .result {
   background: white;
-  color: #2c3e50;
+  color: #1f2937;
   padding: 2.5rem;
   border-radius: 16px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
@@ -131,7 +131,7 @@ input:focus {
   font-weight: 700;
   margin-bottom: 2rem;
   text-align: center;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 .metrics-grid {
@@ -172,7 +172,7 @@ input:focus {
 
 .metric-label {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: #374151;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -182,7 +182,7 @@ input:focus {
 .metric-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
@@ -206,22 +206,22 @@ input:focus {
 
 .status-excellent {
   background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
+  color: #059669;
 }
 
 .status-good {
   background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  color: #059669;
 }
 
 .status-caution {
   background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
+  color: #dc6d00;
 }
 
 .status-warning {
   background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  color: #dc2626;
 }
 
 .score {
@@ -238,12 +238,12 @@ input:focus {
   font-size: 4rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 .score-label {
   font-size: 1.1rem;
-  color: #6b7280;
+  color: #374151;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 600;
@@ -252,7 +252,7 @@ input:focus {
 /* Recommendations */
 .recommendations {
   background: rgba(255, 255, 255, 0.95);
-  color: #2c3e50;
+  color: #1f2937;
   padding: 2rem;
   border-radius: 16px;
   margin-top: 2rem;
@@ -263,7 +263,7 @@ input:focus {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #2c3e50;
+  color: #1f2937;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -274,7 +274,7 @@ input:focus {
   padding: 1rem 1.5rem;
   border-radius: 8px;
   margin-bottom: 1rem;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #3b82f6;
   transition: all 0.3s ease;
 }
 
@@ -284,17 +284,17 @@ input:focus {
 }
 
 .recommendation-item.priority-high {
-  border-left-color: #ef4444;
+  border-left-color: #dc2626;
   background: #fef2f2;
 }
 
 .recommendation-item.priority-medium {
-  border-left-color: #f59e0b;
+  border-left-color: #dc6d00;
   background: #fffbeb;
 }
 
 .recommendation-item.priority-low {
-  border-left-color: #10b981;
+  border-left-color: #059669;
   background: #f0fdf4;
 }
 
@@ -306,7 +306,7 @@ input:focus {
 }
 
 .recommendation-desc {
-  color: #6b7280;
+  color: #374151;
   line-height: 1.5;
   font-size: 0.95rem;
 }
@@ -330,7 +330,7 @@ input:focus {
 .comparison-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1f2937;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -377,13 +377,13 @@ input:focus {
 }
 
 .comparison-city:hover {
-  border-color: #667eea;
+  border-color: #2563eb;
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
 }
 
 .comparison-city.current {
-  border-color: #10b981;
+  border-color: #059669;
   background: #f0fdf4;
 }
 
@@ -397,11 +397,11 @@ input:focus {
 .city-name {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 .remove-city {
-  background: #ef4444;
+  background: #dc2626;
   color: white;
   border: none;
   width: 24px;
@@ -439,7 +439,7 @@ input:focus {
 }
 
 .city-metric-label {
-  color: #6b7280;
+  color: #374151;
   font-weight: 500;
 }
 
@@ -448,10 +448,10 @@ input:focus {
   color: #374151;
 }
 
-.city-metric-value.excellent { color: #10b981; }
-.city-metric-value.good { color: #22c55e; }
-.city-metric-value.caution { color: #f59e0b; }
-.city-metric-value.warning { color: #ef4444; }
+.city-metric-value.excellent { color: #059669; }
+.city-metric-value.good { color: #059669; }
+.city-metric-value.caution { color: #dc6d00; }
+.city-metric-value.warning { color: #dc2626; }
 
 .comparison-table {
   width: 100%;
@@ -464,7 +464,7 @@ input:focus {
 }
 
 .comparison-table th {
-  background: #667eea;
+  background: #2563eb;
   color: white;
   padding: 1rem;
   text-align: left;
@@ -492,7 +492,7 @@ input:focus {
 .suggestions-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1f2937;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -528,13 +528,13 @@ input:focus {
 }
 
 .suggestion-card:hover {
-  border-color: #667eea;
+  border-color: #2563eb;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
 }
 
 .suggestion-card.better {
-  border-color: #10b981;
+  border-color: #059669;
   background: #f0fdf4;
 }
 
@@ -546,7 +546,7 @@ input:focus {
 .suggestion-name {
   font-weight: 700;
   font-size: 1.1rem;
-  color: #2c3e50;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
@@ -554,11 +554,11 @@ input:focus {
   display: grid;
   gap: 0.25rem;
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #374151;
 }
 
 .suggestion-highlight {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #059669;
   color: white;
   padding: 2px 8px;
   border-radius: 12px;
@@ -580,7 +580,7 @@ input:focus {
 .scenario-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1f2937;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -603,7 +603,7 @@ input:focus {
 }
 
 .scenario-control:hover {
-  border-color: #667eea;
+  border-color: #2563eb;
   background: #f0f4ff;
 }
 
@@ -618,7 +618,7 @@ input:focus {
 
 .scenario-current {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #374151;
   font-weight: 400;
 }
 
@@ -639,13 +639,13 @@ input:focus {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #667eea;
+  background: #2563eb;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .scenario-slider::-webkit-slider-thumb:hover {
-  background: #5a67d8;
+  background: #1d4ed8;
   transform: scale(1.1);
 }
 
@@ -653,7 +653,7 @@ input:focus {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #667eea;
+  background: #2563eb;
   cursor: pointer;
   border: none;
 }
@@ -662,7 +662,7 @@ input:focus {
   display: flex;
   justify-content: space-between;
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #374151;
 }
 
 .scenario-impact {
@@ -688,7 +688,7 @@ input:focus {
 
 .impact-label {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: #374151;
   margin-bottom: 0.25rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -707,15 +707,15 @@ input:focus {
 }
 
 .impact-change.positive {
-  color: #10b981;
+  color: #059669;
 }
 
 .impact-change.negative {
-  color: #ef4444;
+  color: #dc2626;
 }
 
 .impact-change.neutral {
-  color: #6b7280;
+  color: #374151;
 }
 
 /* Mobile Wizard */
@@ -739,12 +739,12 @@ input:focus {
 }
 
 .step-dot.active {
-  background: #667eea;
+  background: #2563eb;
   transform: scale(1.2);
 }
 
 .step-dot.completed {
-  background: #10b981;
+  background: #059669;
 }
 
 .mobile-step {
@@ -794,8 +794,8 @@ input:focus {
 
 .advanced-toggle button {
   background: none;
-  border: 2px solid #667eea;
-  color: #667eea;
+  border: 2px solid #3b82f6;
+  color: #2563eb;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   cursor: pointer;
@@ -832,7 +832,7 @@ input:focus {
 }
 
 .selector-input::placeholder {
-  color: #9ca3af;
+  color: #374151;
   font-style: italic;
 }
 
@@ -843,7 +843,7 @@ input:focus {
 
 .selector-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   background-color: white;
 }
@@ -868,7 +868,7 @@ input:focus {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background-color: #6b7280;
+  background-color: #374151;
   color: white;
   border: none;
   cursor: pointer;
@@ -883,7 +883,7 @@ input:focus {
 }
 
 .selector-clear:hover {
-  background-color: #ef4444;
+  background-color: #dc2626;
   opacity: 1;
   transform: scale(1.1);
 }
@@ -891,19 +891,19 @@ input:focus {
 .selector-chevron {
   width: 16px;
   height: 16px;
-  color: #6b7280;
+  color: #374151;
   transition: all 0.2s ease;
   pointer-events: none;
 }
 
 .selector-input:hover + .selector-controls .selector-chevron,
 .selector-input:focus + .selector-controls .selector-chevron {
-  color: #667eea;
+  color: #2563eb;
   transform: scale(1.1);
 }
 
 .selector-input-container:hover .selector-chevron {
-  color: #667eea;
+  color: #2563eb;
   transform: scale(1.1);
 }
 
@@ -913,7 +913,7 @@ input:focus {
   left: 0;
   right: 0;
   background: white;
-  border: 2px solid #667eea;
+  border: 2px solid #3b82f6;
   border-top: none;
   border-radius: 0 0 8px 8px;
   max-height: 200px;
@@ -940,7 +940,7 @@ input:focus {
 
 .selector-option:hover {
   background-color: #f8f9fa;
-  color: #667eea;
+  color: #2563eb;
 }
 
 .selector-option:last-child {
@@ -948,7 +948,7 @@ input:focus {
 }
 
 .selector-option[aria-selected="true"] {
-  background-color: #667eea;
+  background-color: #2563eb;
   color: white;
 }
 
@@ -1027,7 +1027,7 @@ input:focus {
 .affordability-explanation p {
   margin: 0;
   font-size: 1rem;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 .metric-help {
@@ -1042,7 +1042,7 @@ input:focus {
   line-height: 16px;
   cursor: help;
   transition: all 0.2s ease;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 .metric-help:hover {
@@ -1057,7 +1057,7 @@ input:focus {
   background: rgba(254, 202, 87, 0.1);
   border-radius: 4px;
   text-align: center;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 .score-interpretation {
@@ -1067,14 +1067,14 @@ input:focus {
   background: rgba(254, 202, 87, 0.1);
   border-radius: 6px;
   margin: 0.5rem 0;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 /* Calculation Explanation */
 .calculation-toggle {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  color: #2c3e50;
+  color: #1f2937;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -1087,12 +1087,12 @@ input:focus {
 .calculation-toggle:hover {
   background: white;
   border-color: #feca57;
-  color: #2c3e50;
+  color: #1f2937;
 }
 
 .calculation-explanation {
   background: rgba(255, 255, 255, 0.95);
-  color: #2c3e50;
+  color: #1f2937;
   padding: 2rem;
   border-radius: 12px;
   margin: 1.5rem 0;
@@ -1104,7 +1104,7 @@ input:focus {
   font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #2c3e50;
+  color: #1f2937;
   text-align: center;
   border-bottom: 2px solid #e5e7eb;
   padding-bottom: 0.5rem;
@@ -1119,18 +1119,18 @@ input:focus {
   background: #f8f9fa;
   padding: 1.5rem;
   border-radius: 8px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #3b82f6;
   transition: all 0.3s ease;
 }
 
 .calc-step:hover {
   background: #f0f4ff;
-  border-left-color: #5a67d8;
+  border-left-color: #1d4ed8;
   transform: translateX(2px);
 }
 
 .calc-step.methodology {
-  border-left-color: #10b981;
+  border-left-color: #059669;
   background: #f0fdf4;
 }
 
@@ -1171,13 +1171,13 @@ input:focus {
 
 .calc-note {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #374151;
   font-style: italic;
   margin-top: 0.5rem;
   padding: 0.5rem;
   background: rgba(102, 126, 234, 0.05);
   border-radius: 4px;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid #3b82f6;
 }
 
 .calc-scoring {
@@ -1228,7 +1228,7 @@ input:focus {
 /* Alternative Cities Section */
 .alternative-cities {
   background: rgba(255, 255, 255, 0.95);
-  color: #2c3e50;
+  color: #1f2937;
   padding: 2rem;
   border-radius: 16px;
   margin-top: 2rem;
@@ -1239,14 +1239,14 @@ input:focus {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #2c3e50;
+  color: #1f2937;
   text-align: center;
 }
 
 .alternative-cities p {
   text-align: center;
   margin-bottom: 2rem;
-  color: #6b7280;
+  color: #374151;
   font-size: 1rem;
 }
 
@@ -1283,11 +1283,11 @@ input:focus {
 .suggestion-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-  border-color: #667eea;
+  border-color: #2563eb;
 }
 
 .suggestion-card.better {
-  border-color: #10b981;
+  border-color: #059669;
   background: #f0fdf4;
 }
 
@@ -1299,7 +1299,7 @@ input:focus {
 .suggestion-city {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
@@ -1311,7 +1311,7 @@ input:focus {
 }
 
 .suggestion-improvement {
-  background: #10b981;
+  background: #059669;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -1322,7 +1322,7 @@ input:focus {
 }
 
 .suggestion-save-time {
-  background: #3b82f6;
+  background: #2563eb;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -1336,13 +1336,13 @@ input:focus {
   display: grid;
   gap: 0.25rem;
   font-size: 0.9rem;
-  color: #6b7280;
+  color: #374151;
   margin-bottom: 0.75rem;
 }
 
 .suggestion-action {
   font-size: 0.8rem;
-  color: #667eea;
+  color: #2563eb;
   font-weight: 600;
   text-align: center;
   padding: 0.5rem;

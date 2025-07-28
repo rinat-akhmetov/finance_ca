@@ -9,7 +9,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #F5F7FA;
   min-height: 100vh;
   padding: 2rem;
   line-height: 1.6;
@@ -26,10 +26,15 @@ body {
 
 /* Header Styles */
 .header {
-  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, rgba(254, 202, 87, 0.8) 70%, rgba(255, 255, 255, 0.95) 85%, rgba(255, 255, 255, 1) 100%);
   color: white;
   padding: 3rem 2rem;
   text-align: center;
+  position: relative;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .header h2 {
@@ -112,12 +117,13 @@ input:focus {
 
 /* Results Section */
 .result {
-  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-  color: white;
+  background: white;
+  color: #2c3e50;
   padding: 2.5rem;
   border-radius: 16px;
-  box-shadow: 0 15px 35px rgba(116, 185, 255, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
+  border-top: 4px solid #feca57;
 }
 
 .result h3 {
@@ -125,7 +131,7 @@ input:focus {
   font-weight: 700;
   margin-bottom: 2rem;
   text-align: center;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: #2c3e50;
 }
 
 .metrics-grid {
@@ -136,11 +142,10 @@ input:focus {
 
 /* Metrics */
 .metric {
-  background: rgba(255, 255, 255, 0.15);
+  background: #f8f9fa;
   padding: 1.5rem;
   border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid #e9ecef;
   position: relative;
   transition: all 0.3s ease;
 }
@@ -167,16 +172,17 @@ input:focus {
 
 .metric-label {
   font-size: 0.9rem;
-  opacity: 0.9;
+  color: #6b7280;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 .metric-value {
   font-size: 1.8rem;
   font-weight: 700;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: #2c3e50;
   margin-bottom: 0.5rem;
 }
 
@@ -221,24 +227,26 @@ input:focus {
 .score {
   text-align: center;
   grid-column: 1 / -1;
-  background: rgba(255, 255, 255, 0.2);
+  background: #f8f9fa;
   padding: 2rem;
   border-radius: 16px;
   margin-top: 1rem;
+  border: 2px solid #e9ecef;
 }
 
 .score-value {
   font-size: 4rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #2c3e50;
 }
 
 .score-label {
   font-size: 1.1rem;
-  opacity: 0.9;
+  color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 600;
 }
 
 /* Recommendations */
@@ -329,7 +337,7 @@ input:focus {
 }
 
 .add-city-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #feca57;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -341,8 +349,9 @@ input:focus {
 }
 
 .add-city-btn:hover {
+  background: #ff6b6b;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 15px rgba(254, 202, 87, 0.4);
 }
 
 .add-city-btn:disabled {
@@ -769,7 +778,7 @@ input:focus {
 }
 
 .step-btn.next {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #feca57;
   color: white;
 }
 
@@ -795,7 +804,7 @@ input:focus {
 }
 
 .advanced-toggle button:hover {
-  background: #667eea;
+  background: #feca57;
   color: white;
 }
 
@@ -1007,25 +1016,25 @@ input:focus {
 
 /* New UX Enhancement Styles */
 .affordability-explanation {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.9);
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
   text-align: center;
-  backdrop-filter: blur(10px);
+  border: 1px solid rgba(254, 202, 87, 0.3);
 }
 
 .affordability-explanation p {
   margin: 0;
   font-size: 1rem;
-  opacity: 0.95;
+  color: #2c3e50;
 }
 
 .metric-help {
   display: inline-block;
   width: 16px;
   height: 16px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(254, 202, 87, 0.2);
   border-radius: 50%;
   margin-left: 0.5rem;
   text-align: center;
@@ -1033,10 +1042,11 @@ input:focus {
   line-height: 16px;
   cursor: help;
   transition: all 0.2s ease;
+  color: #2c3e50;
 }
 
 .metric-help:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(254, 202, 87, 0.4);
   transform: scale(1.1);
 }
 
@@ -1044,26 +1054,27 @@ input:focus {
   font-size: 0.85rem;
   margin: 0.5rem 0;
   padding: 0.25rem 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(254, 202, 87, 0.1);
   border-radius: 4px;
   text-align: center;
-  opacity: 0.9;
+  color: #2c3e50;
 }
 
 .score-interpretation {
   text-align: center;
   font-weight: 500;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(254, 202, 87, 0.1);
   border-radius: 6px;
   margin: 0.5rem 0;
+  color: #2c3e50;
 }
 
 /* Calculation Explanation */
 .calculation-toggle {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #2c3e50;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -1074,8 +1085,9 @@ input:focus {
 }
 
 .calculation-toggle:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: white;
+  border-color: #feca57;
+  color: #2c3e50;
 }
 
 .calculation-explanation {
@@ -1276,12 +1288,12 @@ input:focus {
 
 .suggestion-card.better {
   border-color: #10b981;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  background: #f0fdf4;
 }
 
 .suggestion-card.alternative {
   border-color: #3b82f6;
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  background: #eff6ff;
 }
 
 .suggestion-city {
@@ -1299,7 +1311,7 @@ input:focus {
 }
 
 .suggestion-improvement {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #10b981;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -1310,7 +1322,7 @@ input:focus {
 }
 
 .suggestion-save-time {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: #3b82f6;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
